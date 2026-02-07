@@ -1,10 +1,10 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/Hero';
 import SpecialModal from './components/SpecialModals';
 import { LOGO_URL, SANDWICH_ITEMS, TRAY_ITEMS, SWEET_ITEMS } from './constants';
 import { SpecialOrderState } from './types';
+// Added Facebook to the lucide-react import list
 import { Utensils, IceCream, Sandwich, ShoppingBasket, X, Trash2, Send, Plus, Minus, Truck, Loader2, Star, Sparkles, MapPin, Phone, User, AlertCircle, MessageSquare, ChefHat, HeartHandshake, Clock, Zap, Facebook } from 'lucide-react';
 
 const DELIVERY_FEE = 20;
@@ -298,7 +298,7 @@ const App: React.FC = () => {
                   </motion.div>
                   <div className="relative z-10 flex flex-col items-center">
                     <div className="bg-black/10 p-5 rounded-full mb-8">
-                      <img src={LOGO_URL} className="w-20 h-20 object-contain" alt="Ya3m Logo Icon" />
+                      <ChefHat className="w-20 h-20 text-black" />
                     </div>
                     <h2 className="text-5xl md:text-7xl font-normal font-['Lalezar'] mb-6">عايز عزومة؟ أو أكلة مخصوص؟</h2>
                     <p className="text-2xl md:text-3xl font-black mb-12 max-w-3xl opacity-80 leading-relaxed">يا عم بيعملك أي أكلة بيتي تخطر على بالك! قولي إيه في نفسك واحنا علينا التنفيذ والتوصيل لحد بابك.</p>
