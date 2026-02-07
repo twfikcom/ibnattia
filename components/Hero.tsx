@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { LOGO_URL } from '../constants';
-import { Truck, ChevronDown } from 'lucide-react';
+import { Truck, ChevronDown, Clock } from 'lucide-react';
 
 const Hero: React.FC = () => {
   const scrollToMenu = () => {
@@ -60,15 +60,27 @@ const Hero: React.FC = () => {
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex items-center gap-2 text-[#FAB520] bg-[#FAB520]/10 px-4 py-2 rounded-full border border-[#FAB520]/20 font-bold text-xs md:text-sm"
-          >
-            <Truck className="w-4 h-4" />
-            <span>خدمة التوصيل بـ 20 جنيه بس!</span>
-          </motion.div>
+          <div className="flex flex-col items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="flex items-center gap-2 text-[#FAB520] bg-[#FAB520]/10 px-4 py-2 rounded-full border border-[#FAB520]/20 font-bold text-xs md:text-sm"
+            >
+              <Truck className="w-4 h-4" />
+              <span>خدمة التوصيل بـ 20 جنيه بس!</span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+              className="flex items-center gap-2 text-white/50 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 font-bold text-[10px] md:text-xs"
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>توصيل خلال نص ساعة / ساعة</span>
+            </motion.div>
+          </div>
 
           <motion.div
             animate={{ y: [0, 10, 0] }}
