@@ -219,7 +219,7 @@ const App: React.FC = () => {
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 50, repeat: Infinity, ease: "linear" }} className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] border-[2px] border-[#FAB520]/5 rounded-full blur-2xl" />
             </div>
 
-            <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10">
+            <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10 pb-32">
               <Hero />
               
               <section id="ordering-section" className="mt-12">
@@ -239,7 +239,7 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Order Summary Block */}
+              {/* Order Summary Block - Consistent with Main UI */}
               <AnimatePresence>
                 {globalTotal > 0 && (
                   <motion.div 
@@ -294,16 +294,16 @@ const App: React.FC = () => {
               </section>
             </main>
 
-            {/* Special Order Modal (Catering) - Improved Mobile Compatibility */}
+            {/* Special Order Modal (Catering) - Ensuring Mobile-First Scrolling */}
             <AnimatePresence>
               {isSpecialOrderOpen && (
-                <div className="fixed inset-0 z-[4000] flex items-center justify-center overflow-y-auto px-4 py-6 md:p-10">
+                <div className="fixed inset-0 z-[8000] flex items-center justify-center px-4 py-10">
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSpecialOrderOpen(false)} className="fixed inset-0 bg-black/95 backdrop-blur-xl" />
                   <motion.div 
                     initial={{ scale: 0.9, opacity: 0, y: 20 }} 
                     animate={{ scale: 1, opacity: 1, y: 0 }} 
                     exit={{ scale: 0.9, opacity: 0, y: 20 }} 
-                    className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-6 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)] z-[4001] max-h-[90vh] overflow-y-auto"
+                    className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-6 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)] z-[8001] max-h-[90vh] overflow-y-auto"
                   >
                     <button onClick={() => setIsSpecialOrderOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white p-2"><X className="w-6 h-6" /></button>
                     <div className="flex flex-col items-center mb-8 pt-4">
@@ -372,10 +372,10 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Final Cart Drawer - Ensuring it's Always Accessible */}
+            {/* Final Cart Drawer - Highest Z-Index */}
             <AnimatePresence>
               {isCartOpen && (
-                <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[9000] flex items-center justify-center p-4">
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-black/98 backdrop-blur-3xl" />
                   <motion.div 
                     initial={{ y: 100, opacity: 0 }} 
@@ -410,13 +410,13 @@ const App: React.FC = () => {
 
                     <form onSubmit={handleFinalSubmit} className="space-y-4 pt-4 border-t border-white/10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                         <input required type="text" value={userInfo.name} onChange={e => setUserInfo(u => ({...u, name: e.target.value}))} placeholder="الاسم" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
-                         <input required type="tel" value={userInfo.phone} onChange={e => setUserInfo(u => ({...u, phone: e.target.value}))} placeholder="رقم التليفون" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
+                         <input required type="text" value={userInfo.name} onChange={e => setUserInfo(u => ({...u, name: e.target.value}))} placeholder="الاسم" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white text-base" />
+                         <input required type="tel" value={userInfo.phone} onChange={e => setUserInfo(u => ({...u, phone: e.target.value}))} placeholder="رقم التليفون" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white text-base" />
                       </div>
-                      <input required type="text" value={userInfo.address} onChange={e => setUserInfo(u => ({...u, address: e.target.value}))} placeholder="العنوان بالتفصيل" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
+                      <input required type="text" value={userInfo.address} onChange={e => setUserInfo(u => ({...u, address: e.target.value}))} placeholder="العنوان بالتفصيل" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white text-base" />
                       
                       <div className="flex justify-between items-center mb-2 px-2">
-                         <span className="text-xl font-bold text-gray-400">الإجمالي الكلي:</span>
+                         <span className="text-xl font-bold text-gray-400">الإجمالي:</span>
                          <span className="text-3xl font-bold text-[#FAB520]">{globalTotal} ج.م</span>
                       </div>
 
@@ -433,8 +433,8 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Floating Cart Button - Ensuring Always Accessible */}
-            <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[4500]">
+            {/* Floating Cart Button - Highest Priority Z-Index */}
+            <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[9999]">
               <motion.button 
                 whileHover={{ scale: 1.1 }} 
                 whileTap={{ scale: 0.9 }} 
@@ -466,7 +466,7 @@ const App: React.FC = () => {
 
             <AnimatePresence>
               {showSuccess && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[6000] bg-black flex flex-col items-center justify-center p-8 text-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center p-8 text-center">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><HeartHandshake className="w-16 h-16 text-black" /></motion.div>
                   <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
                   <p className="text-xl text-gray-400 font-bold mb-2">استلمنا طلبك وبنجهزهولك 🤝🔥</p>
