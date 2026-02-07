@@ -218,7 +218,7 @@ const App: React.FC = () => {
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 50, repeat: Infinity, ease: "linear" }} className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] border-[2px] border-[#FAB520]/5 rounded-full blur-2xl" />
             </div>
 
-            <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10 pb-32">
+            <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10">
               <Hero />
               
               <section className="mt-12">
@@ -238,19 +238,45 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Special Orders / Catering Section */}
-              <section className="mt-20">
+              {/* Order Summary Block - Consistent with Static Version */}
+              <AnimatePresence>
+                {globalTotal > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="max-w-4xl mx-auto bg-white/5 backdrop-blur-xl border border-[#FAB520]/20 rounded-[2.5rem] p-8 mt-12 mb-20 shadow-2xl"
+                  >
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 text-center md:text-right gap-4">
+                      <h3 className="text-3xl font-['Lalezar'] text-[#FAB520]">حساب أكلة يا عم</h3>
+                      <div className="flex flex-col items-center md:items-end">
+                         <span className="text-gray-400 text-sm font-bold">الإجمالي شامل التوصيل ({DELIVERY_FEE} ج.م)</span>
+                         <span className="text-4xl font-bold text-[#FAB520] tracking-tight">{globalTotal} ج.م</span>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setActiveModal(Object.keys(sandwichState.quantities).some(k => sandwichState.quantities[k] > 0) ? 'sandwiches' : 'trays')}
+                      className="w-full py-5 bg-[#FAB520] text-black font-bold text-2xl rounded-3xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform font-['Lalezar']"
+                    >
+                      <ShoppingBasket className="w-8 h-8" />
+                      <span>أكد أكلتك مع يا عم!</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Special Orders / Catering Section - Moved to Bottom before Footer */}
+              <section className="mt-20 mb-20">
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  className="bg-gradient-to-r from-[#FAB520] to-[#facc15] p-8 md:p-12 rounded-[3rem] text-black text-center shadow-[0_20px_60px_rgba(250,181,32,0.4)] relative overflow-hidden"
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-r from-[#FAB520] to-[#facc15] p-8 md:p-12 rounded-[3rem] text-black text-center shadow-[0_20px_60px_rgba(250,181,32,0.4)] relative overflow-hidden group"
                 >
-                  {/* Replaced ChefHat with Logo URL */}
-                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -top-10 -right-10 opacity-10">
-                    <img src={LOGO_URL} className="w-48 h-48 object-contain" alt="" />
+                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -top-10 -right-10 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-700">
+                    <img src={LOGO_URL} className="w-64 h-64 object-contain" alt="" />
                   </motion.div>
                   <div className="relative z-10 flex flex-col items-center">
-                    {/* Replaced Sparkles with Logo URL */}
                     <div className="bg-black/10 p-4 rounded-full mb-6">
                         <img src={LOGO_URL} className="w-12 h-12 object-contain" alt="" />
                     </div>
@@ -275,7 +301,6 @@ const App: React.FC = () => {
                   <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-8 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)]">
                     <button onClick={() => setIsSpecialOrderOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white"><X className="w-6 h-6" /></button>
                     <div className="flex flex-col items-center mb-8">
-                       {/* Replaced ChefHat with Logo URL */}
                        <img src={LOGO_URL} className="w-16 h-16 object-contain mb-4" alt="" />
                        <h2 className="text-3xl font-normal font-['Lalezar'] text-[#FAB520]">طلبات خاصة وعزومات</h2>
                        <p className="text-gray-400 text-center mt-2 font-bold">اكتب اللي نفسك فيه ورقمك، وهنتواصل معاك فوراً لتحديد السعر والوقت!</p>
@@ -316,7 +341,20 @@ const App: React.FC = () => {
             </AnimatePresence>
 
             <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[100]">
-              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIsGlobalSummaryOpen(true)} className="bg-[#FAB520] text-black p-4 md:p-5 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black">
+              <motion.button 
+                whileHover={{ scale: 1.1 }} 
+                whileTap={{ scale: 0.9 }} 
+                onClick={() => {
+                  const hasItems = totalItemCount > 0;
+                  if (hasItems) {
+                    // Open the most relevant category or just sandwiches by default
+                    setActiveModal('sandwiches');
+                  } else {
+                    document.getElementById('ordering-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }} 
+                className="bg-[#FAB520] text-black p-4 md:p-5 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black"
+              >
                 <div className="relative">
                   <ShoppingBasket className="w-6 h-6 md:w-8 md:h-8" />
                   {totalItemCount > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{totalItemCount}</span>}
@@ -339,7 +377,7 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            <footer className="py-16 text-center text-gray-700 bg-black/50 border-t border-white/5">
+            <footer className="py-16 text-center text-gray-700 bg-black/50 border-t border-white/5 relative z-10">
               <div className="mb-8 flex flex-col items-center gap-4">
                   <a href="https://wa.me/201010373331" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[#25D366] hover:scale-105 transition-transform"><Phone className="w-5 h-5" /><span className="font-bold text-lg">واتساب: 01010373331</span></a>
                   <a href="https://www.facebook.com/Ya3mCom" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[#1877F2] hover:scale-105 transition-transform"><Facebook className="w-5 h-5" /><span className="font-bold text-lg">تابعنا على فيسبوك</span></a>
