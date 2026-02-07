@@ -19,10 +19,18 @@ function initIcons() {
   if (window.lucide) window.lucide.createIcons();
 }
 
-function scrollToMenu() {
+// Global functions for static part
+window.scrollToMenu = function() {
   const section = document.getElementById('ordering-section');
   if (section) section.scrollIntoView({ behavior: 'smooth' });
-}
+};
+
+window.toggleSpecialModal = function() {
+  const modal = document.getElementById('special-order-modal');
+  if (modal) {
+    modal.classList.toggle('hidden');
+  }
+};
 
 function startPreloader() {
   const loaderBar = document.getElementById('loader-bar');
@@ -35,15 +43,17 @@ function startPreloader() {
       progress = 100;
       clearInterval(interval);
       setTimeout(() => {
-        preloader.classList.add('opacity-0');
+        if (preloader) preloader.classList.add('opacity-0');
         setTimeout(() => {
-          preloader.style.display = 'none';
-          mainContent.classList.remove('opacity-0');
-          mainContent.classList.add('opacity-100');
+          if (preloader) preloader.style.display = 'none';
+          if (mainContent) {
+            mainContent.classList.remove('opacity-0');
+            mainContent.classList.add('opacity-100');
+          }
         }, 800);
       }, 1000);
     }
-    loaderBar.style.width = `${progress}%`;
+    if (loaderBar) loaderBar.style.width = `${progress}%`;
   }, 150);
 }
 
@@ -83,28 +93,29 @@ function renderSandwiches() {
   initIcons();
 }
 
-function updateQty(name, delta, price) {
+window.updateQty = function(name, delta, price) {
   if (!cart[name]) cart[name] = { quantity: 0, price: price, bread: 'baladi' };
   cart[name].quantity = Math.max(0, cart[name].quantity + delta);
   if (cart[name].quantity === 0) delete cart[name];
   renderSandwiches();
   updateCartBadge();
   updateMainSummary();
-}
+};
 
-function setBread(name, type) {
+window.setBread = function(name, type) {
   if (cart[name]) {
     cart[name].bread = type;
     renderSandwiches();
   }
-}
+};
 
-function updateSauceQty(delta) {
+window.updateSauceQty = function(delta) {
   sauceQuantity = Math.max(0, sauceQuantity + delta);
-  document.getElementById('sauce-qty').innerText = sauceQuantity;
+  const sauceEl = document.getElementById('sauce-qty');
+  if (sauceEl) sauceEl.innerText = sauceQuantity;
   updateMainSummary();
   updateCartBadge();
-}
+};
 
 function updateCartBadge() {
   const badge = document.getElementById('cart-badge');
@@ -121,22 +132,17 @@ function updateMainSummary() {
   let subtotal = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
   subtotal += (sauceQuantity * SAUCE_PRICE);
   if (subtotal > 0) {
-    summaryBox.classList.remove('hidden');
-    totalEl.innerText = `${subtotal + DELIVERY_FEE} ج.م`;
+    if (summaryBox) summaryBox.classList.remove('hidden');
+    if (totalEl) totalEl.innerText = `${subtotal + DELIVERY_FEE} ج.م`;
   } else {
-    summaryBox.classList.add('hidden');
+    if (summaryBox) summaryBox.classList.add('hidden');
   }
 }
 
-function toggleCart() {
+window.toggleCart = function() {
   const overlay = document.getElementById('cart-drawer-overlay');
-  overlay.classList.toggle('hidden');
-}
-
-function toggleSpecialModal() {
-  const modal = document.getElementById('special-order-modal');
-  modal.classList.toggle('hidden');
-}
+  if (overlay) overlay.classList.toggle('hidden');
+};
 
 // Handle Special Request Form
 const specialForm = document.getElementById('special-request-form');
@@ -147,8 +153,10 @@ if(specialForm) {
     const phone = document.getElementById('special-phone').value;
     const btn = document.getElementById('special-submit-btn');
     
-    btn.disabled = true;
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i><span>جاري الإرسال...</span>`;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i><span>جاري الإرسال...</span>`;
+    }
     initIcons();
 
     try {
@@ -158,25 +166,31 @@ if(specialForm) {
         body: JSON.stringify({ النوع: "عزومة / طلب خاص (HTML)", الطلب: msg, التليفون: phone })
       });
       if (response.ok) {
-        toggleSpecialModal();
-        document.getElementById('success-screen').style.display = 'flex';
+        window.toggleSpecialModal();
+        const success = document.getElementById('success-screen');
+        if (success) success.style.display = 'flex';
         setTimeout(() => { location.reload(); }, 4000);
       } else {
         alert('حدث خطأ، حاول مجدداً');
-        btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+        }
         initIcons();
       }
     } catch (err) {
       alert('خطأ في الاتصال');
-      btn.disabled = false;
-      btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+      }
       initIcons();
     }
   });
 }
 
-window.onload = () => {
+window.addEventListener('load', () => {
   startPreloader();
   renderSandwiches();
-};
+  initIcons();
+});

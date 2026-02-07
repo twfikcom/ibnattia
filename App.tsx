@@ -245,9 +245,15 @@ const App: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   className="bg-gradient-to-r from-[#FAB520] to-[#facc15] p-8 md:p-12 rounded-[3rem] text-black text-center shadow-[0_20px_60px_rgba(250,181,32,0.4)] relative overflow-hidden"
                 >
-                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -top-10 -right-10 opacity-10"><ChefHat className="w-48 h-48" /></motion.div>
+                  {/* Replaced ChefHat with Logo URL */}
+                  <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -top-10 -right-10 opacity-10">
+                    <img src={LOGO_URL} className="w-48 h-48 object-contain" alt="" />
+                  </motion.div>
                   <div className="relative z-10 flex flex-col items-center">
-                    <div className="bg-black/10 p-4 rounded-full mb-6"><Sparkles className="w-12 h-12" /></div>
+                    {/* Replaced Sparkles with Logo URL */}
+                    <div className="bg-black/10 p-4 rounded-full mb-6">
+                        <img src={LOGO_URL} className="w-12 h-12 object-contain" alt="" />
+                    </div>
                     <h2 className="text-4xl md:text-6xl font-normal font-['Lalezar'] mb-4">عايز عزومة؟ أو صنف مش في المنيو؟</h2>
                     <p className="text-xl md:text-2xl font-bold mb-8 max-w-2xl opacity-80">يا عم بيعملك أي أكلة بيتي تخطر على بالك! قولي إيه في نفسك واحنا علينا التنفيذ والتوصيل.</p>
                     <button 
@@ -269,7 +275,8 @@ const App: React.FC = () => {
                   <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-8 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)]">
                     <button onClick={() => setIsSpecialOrderOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white"><X className="w-6 h-6" /></button>
                     <div className="flex flex-col items-center mb-8">
-                       <ChefHat className="w-16 h-16 text-[#FAB520] mb-4" />
+                       {/* Replaced ChefHat with Logo URL */}
+                       <img src={LOGO_URL} className="w-16 h-16 object-contain mb-4" alt="" />
                        <h2 className="text-3xl font-normal font-['Lalezar'] text-[#FAB520]">طلبات خاصة وعزومات</h2>
                        <p className="text-gray-400 text-center mt-2 font-bold">اكتب اللي نفسك فيه ورقمك، وهنتواصل معاك فوراً لتحديد السعر والوقت!</p>
                     </div>
