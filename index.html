@@ -12,6 +12,11 @@
     <link rel="canonical" href="https://ya3m.com">
     <meta name="robots" content="index, follow">
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png">
+    <link rel="apple-touch-icon" href="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png">
+    <link rel="shortcut icon" href="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png">
+
     <!-- Open Graph for Social Media -->
     <meta property="og:title" content="يا عم دليفري | أكل بيتي عالي الجودة حسب الطلب - يا عم دوت كوم">
     <meta property="og:description" content="أسرع خدمة توصيل كبدة وسجق وحواوشي من يا عم. اطلب دلوقتي أونلاين!">
@@ -47,7 +52,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonts with swap display -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&family=Lalezar&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     
     <!-- Lucide Icons -->
@@ -69,10 +74,12 @@
 </head>
 <body class="bg-black text-white selection:bg-[#FAB520] selection:text-black overflow-x-hidden">
 
-    <!-- Preloader Screen (Enhanced for LCP) -->
+    <div id="root"></div>
+
+    <!-- Static Fallback / HTML Implementation -->
     <div id="preloader" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center transition-opacity duration-700">
         <div class="relative flex flex-col items-center">
-            <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" alt="يا عم دليفري - لوجو التحميل" class="h-32 md:h-48 w-auto object-contain animate-pulse-slow" fetchpriority="high" width="192" height="192">
+            <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" alt="يا عم دليفري" class="h-32 md:h-48 w-auto object-contain animate-pulse-slow">
             <div class="mt-12 flex flex-col items-center w-full">
                 <div class="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-3">
                     <div id="loader-bar" class="h-full bg-[#FAB520] transition-all duration-300 ease-out" style="width: 0%"></div>
@@ -80,19 +87,11 @@
                 <p class="animate-dastoor text-[#FAB520] font-black text-2xl md:text-5xl font-['Lalezar'] drop-shadow-[0_0_15px_rgba(250,181,32,0.6)]">دستوووووور! 🧞‍♂️</p>
             </div>
         </div>
-        <div class="absolute bottom-10 text-white/20 font-bold text-sm tracking-widest uppercase">Ya3m.com Delivery</div>
-    </div>
-
-    <!-- Background Elements -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="glow-bg absolute -top-1/4 -right-1/4 w-[150%] h-[150%] border-[2px] border-[#FAB520]/5 rounded-full blur-2xl"></div>
-        <div class="scooter absolute text-5xl opacity-30 select-none" aria-hidden="true">🛵💨</div>
     </div>
 
     <main id="main-content" class="max-w-4xl mx-auto px-4 pt-4 relative z-10 pb-32 opacity-0 transition-opacity duration-1000">
-        <!-- Hero Section -->
-        <header onclick="scrollToMenu()" class="relative flex flex-col items-center justify-center text-center py-10 md:py-16 overflow-hidden cursor-pointer group">
-            <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" alt="يا عم - أكل بيتي عالي الجودة" class="h-36 md:h-48 w-auto object-contain mb-8 drop-shadow-[0_0_40px_rgba(250,181,32,0.4)] transition-transform group-hover:scale-110" fetchpriority="high" width="192" height="192">
+        <header onclick="scrollToMenu()" class="relative flex flex-col items-center justify-center text-center py-10 md:py-16 cursor-pointer group">
+            <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" alt="يا عم" class="h-36 md:h-48 w-auto object-contain mb-8 drop-shadow-[0_0_40px_rgba(250,181,32,0.4)] transition-transform group-hover:scale-110">
             <h1 class="text-5xl md:text-7xl font-normal mb-6 leading-[1.1] tracking-tight font-['Lalezar']">
                 أكل بيتي <br/> 
                 <span class="text-[#FAB520] drop-shadow-[0_5px_15px_rgba(250,181,32,0.3)]">عالي الجودة حسب الطلب</span>
@@ -101,56 +100,20 @@
                 <div class="bg-white/5 backdrop-blur-md border border-white/10 px-6 py-3 rounded-2xl inline-block shadow-2xl">
                     <p class="text-lg md:text-xl text-gray-300 font-bold">كبدة • سجق • حواوشي - يا عم دوت كوم</p>
                 </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="flex items-center gap-2 text-[#FAB520] bg-[#FAB520]/10 px-4 py-2 rounded-full border border-[#FAB520]/20 font-bold text-xs md:text-sm">
-                        <i data-lucide="truck" class="w-4 h-4"></i>
-                        <span>توصيل يا عم بـ 20 ج بس!</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-white/50 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 font-bold text-[10px] md:text-xs">
-                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                        <span>توصيل خلال نص ساعة / ساعة</span>
-                    </div>
-                </div>
                 <div class="mt-4 animate-bounce text-[#FAB520]/50">
                     <i data-lucide="chevron-down" class="w-8 h-8"></i>
                 </div>
             </div>
         </header>
 
-        <!-- Direct Ordering Section -->
         <section id="ordering-section" class="mt-8 space-y-8">
-            <div class="flex flex-col items-center text-center mb-6">
-                 <h2 class="text-3xl md:text-5xl font-normal text-[#FAB520] drop-shadow-[0_0_20px_rgba(250,181,32,0.5)] font-['Lalezar'] mb-4">اطلب من يا عم دليفري دلوقتي! 🤤</h2>
-            </div>
-
-            <div class="grid grid-cols-1 gap-6" id="sandwich-list">
-                <!-- Sandwiches injected via script.js -->
-            </div>
+            <div class="grid grid-cols-1 gap-6" id="sandwich-list"></div>
             
-            <div class="flex flex-col items-center pt-4">
-                <!-- Secret Sauce Counter -->
-                <div id="sauce-btn" class="w-full max-w-md p-5 rounded-2xl border-2 transition-all flex items-center justify-between bg-white/5 border-dashed border-[#FAB520]/20">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="sparkles" class="w-5 h-5 text-[#FAB520]"></i>
-                        <div class="text-right">
-                            <h4 class="font-bold text-lg">صوص أعجوبة السحري ✨</h4>
-                            <p class="text-[10px] opacity-60">سر يا عم دوت كوم (+10 ج.م)</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black p-2 rounded-2xl border border-white/10">
-                        <button onclick="updateSauceQty(-1)" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="تقليل الكمية"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                        <span class="text-xl font-bold w-6 text-center text-white" id="sauce-qty">0</span>
-                        <button onclick="updateSauceQty(1)" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="زيادة الكمية"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Summary -->
             <div id="main-order-summary" class="bg-white/5 backdrop-blur-xl border border-[#FAB520]/20 rounded-[2.5rem] p-8 mt-12 hidden">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-['Lalezar'] text-[#FAB520]">حساب أكلة يا عم</h3>
                     <div class="text-right">
-                         <span class="block text-gray-400 text-xs">الإجمالي شامل التوصيل</span>
+                         <span class="block text-gray-400 text-xs">الإجمالي</span>
                          <span id="main-total-price" class="text-3xl font-bold text-[#FAB520]">0 ج.م</span>
                     </div>
                 </div>
@@ -160,72 +123,93 @@
                 </button>
             </div>
         </section>
+
+        <!-- Catering / Special Request Section -->
+        <section class="mt-24 mb-10">
+            <div class="bg-gradient-to-br from-[#FAB520] to-[#facc15] p-8 md:p-12 rounded-[3rem] text-black text-center shadow-2xl relative overflow-hidden group">
+                <div class="relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-['Lalezar'] mb-4">عايز عزومة؟ أو أكلة مخصوص؟</h2>
+                    <p class="text-xl md:text-2xl font-bold mb-8 max-w-2xl mx-auto opacity-80">يا عم بيعملك أي أكلة بيتي تخطر على بالك! قولي إيه في نفسك واحنا علينا التنفيذ والتوصيل.</p>
+                    <button onclick="openSpecialCatering()" class="bg-black text-[#FAB520] px-12 py-5 rounded-2xl font-['Lalezar'] text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-transform">
+                        اطلب طلب خاص يا عم!
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Global Cart Drawer -->
+    <!-- Global Cart Drawer (Menu Items) -->
     <div id="cart-drawer-overlay" class="fixed inset-0 z-[1000] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="toggleCart()"></div>
         <div class="relative w-full md:w-[450px] h-full bg-[#0c0c0c] flex flex-col shadow-2xl float-left transition-transform duration-500 translate-x-full" id="cart-drawer">
-            <div class="p-5 md:p-8 flex justify-between items-center border-b border-white/5 bg-black/40 shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-[#FAB520]/20 rounded-xl text-[#FAB520]"><i data-lucide="shopping-basket" class="w-5 h-5"></i></div>
-                    <h2 class="text-2xl font-normal font-['Lalezar']">بياناتك يا عم</h2>
-                </div>
-                <button onclick="toggleCart()" class="p-2 bg-white/5 rounded-full hover:bg-red-500/20" aria-label="إغلاق"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="p-6 border-b border-white/5 bg-black/40 flex justify-between items-center">
+                <h2 class="text-2xl font-['Lalezar']">سلة يا عم</h2>
+                <button onclick="toggleCart()" class="p-2 bg-white/5 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-
-            <div class="flex-1 overflow-y-auto px-5 py-6 space-y-5 scrollbar-hide" id="cart-items-container"></div>
-
-            <div id="cart-footer" class="p-5 md:p-8 border-t border-[#FAB520]/20 bg-black/80 space-y-5 pb-10">
+            <div class="flex-1 overflow-y-auto px-5 py-6" id="cart-items-container"></div>
+            <div class="p-6 border-t border-[#FAB520]/20 bg-black/80">
                 <form id="order-form" class="space-y-3">
-                    <input required id="form-name" placeholder="اسمك" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-sm">
-                    <input required id="form-phone" type="tel" placeholder="تليفونك" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-sm">
-                    <input required id="form-address" placeholder="العنوان فين بالضبط؟" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-sm">
-                    <textarea id="form-notes" placeholder="حابب تقول حاجة لـ يا عم دليفري؟" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-sm resize-none h-24"></textarea>
-                    <button type="submit" id="submit-btn" class="w-full py-5 bg-[#FAB520] text-black font-bold text-xl rounded-3xl shadow-xl flex items-center justify-center gap-3 mt-3">
-                        <i data-lucide="send" class="w-8 h-8"></i>
-                        <span>اطلب الآن من يا عم!</span>
-                    </button>
+                    <input required id="form-name" placeholder="الاسم" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold">
+                    <input required id="form-phone" type="tel" placeholder="رقم التليفون" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold">
+                    <input required id="form-address" placeholder="العنوان" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold">
+                    <button type="submit" id="submit-btn" class="w-full py-5 bg-[#FAB520] text-black font-bold text-xl rounded-2xl">تأكيد الطلب</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Success Screen -->
-    <div id="success-screen" class="fixed inset-0 z-[5000] bg-black hidden flex-col items-center justify-center p-8 text-center">
-        <div class="bg-[#FAB520] p-12 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)] text-black">
-            <i data-lucide="send" class="w-24 h-24"></i>
-        </div>
-        <h2 class="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">يا عم طلبك طار!</h2>
-        <p class="text-xl text-gray-400 font-bold">هيكون عندك خلال 25 دقيقة من يا عم دليفري 🛵💨</p>
-    </div>
-
-    <!-- Floating Badge -->
-    <div class="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[100]">
-        <button onclick="toggleCart()" class="bg-[#FAB520] text-black p-4 md:p-6 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black transition-transform hover:scale-110 active:scale-95">
-            <div class="relative">
-                <i data-lucide="shopping-basket" class="w-5 h-5 md:w-8 h-8"></i>
-                <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] md:text-xs font-bold w-5 h-5 md:w-7 h-7 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+    <!-- Special Catering Modal -->
+    <div id="special-catering-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeSpecialCatering()"></div>
+        <div class="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-6 md:p-10 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <button onclick="closeSpecialCatering()" class="absolute top-6 left-6 text-white/40 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="text-center mb-8">
+                <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" class="h-20 mx-auto mb-4" alt="يا عم">
+                <h2 class="text-3xl font-['Lalezar'] text-[#FAB520]">طلبات خاصة وعزومات</h2>
+                <p class="text-gray-400 font-bold mt-2">اكتب اللي في نفسك ورقمك وهنتواصل معاك!</p>
             </div>
-            <span class="text-lg font-bold hidden sm:inline">سلة يا عم</span>
-        </button>
+            <form id="catering-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-2">إيه الطلب أو العزومة اللي حابب تعملها؟</label>
+                    <textarea required id="cat-message" placeholder="مثلاً: عايز 10 كباري كبدة، وحلة محشي، وصينية بشاميل كبيرة..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="relative">
+                        <input required id="cat-name" placeholder="الاسم" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold">
+                    </div>
+                    <div class="relative">
+                        <input required id="cat-phone" type="tel" placeholder="رقم التليفون" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold">
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <label class="block text-sm font-bold text-gray-500">درجة الاستعجال:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="setCatUrgency('urgent')" id="btn-urg-urgent" class="p-4 rounded-xl border border-white/10 bg-white/5 font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i> مستعجل
+                        </button>
+                        <button type="button" onclick="setCatUrgency('normal')" id="btn-urg-normal" class="p-4 rounded-xl border border-[#FAB520] bg-[#FAB520]/10 text-[#FAB520] font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="clock" class="w-4 h-4"></i> طلب عادي
+                        </button>
+                    </div>
+                </div>
+                <div id="date-picker-container" class="hidden">
+                    <label class="block text-sm font-bold text-gray-500 mb-2">حدد الموعد (يوم/ساعة):</label>
+                    <input type="datetime-local" id="cat-date" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white">
+                </div>
+                <button type="submit" id="cat-submit-btn" class="w-full py-5 bg-[#FAB520] text-black font-['Lalezar'] text-2xl rounded-2xl shadow-xl flex items-center justify-center gap-3">
+                    <i data-lucide="send" class="w-8 h-8"></i>
+                    <span>ابعت الطلب لـ يا عم!</span>
+                </button>
+            </form>
+        </div>
     </div>
 
     <footer class="py-16 text-center text-gray-700 bg-black/50 border-t border-white/5 mt-12">
-        <div class="mb-8 flex flex-col items-center gap-4">
-            <a href="https://wa.me/201010373331" target="_blank" class="flex items-center gap-2 text-[#25D366] hover:scale-105 transition-transform">
-                <i data-lucide="phone" class="w-5 h-5"></i>
-                <span class="font-bold text-lg">واتساب يا عم: 01010373331</span>
-            </a>
-            <a href="https://www.facebook.com/Ya3mCom" target="_blank" class="flex items-center gap-2 text-[#1877F2] hover:scale-105 transition-transform">
-                <i data-lucide="facebook" class="w-5 h-5"></i>
-                <span class="font-bold text-lg">يا عم دوت كوم على فيسبوك</span>
-            </a>
-        </div>
-        <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" class="h-14 w-auto mx-auto mb-6 grayscale opacity-40" alt="يا عم دليفري - لوجو الفوتر" loading="lazy" width="56" height="56">
-        <p class="font-bold text-[10px] tracking-widest uppercase">جميع الحقوق محفوظة لـ يا عم دليفري دوت كوم © 2025</p>
+        <img src="https://sayedsamkary.com/%D9%8A%D8%A7%D8%B9%D9%85.png" class="h-14 mx-auto mb-6 grayscale opacity-40">
+        <p class="font-bold text-[10px] uppercase">جميع الحقوق محفوظة لـ يا عم دوت كوم © 2025</p>
     </footer>
 
+    <script type="module" src="index.tsx"></script>
     <script src="script.js"></script>
 </body>
 </html>
