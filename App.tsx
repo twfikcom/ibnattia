@@ -17,7 +17,7 @@ const App: React.FC = () => {
 
   const [activeModal, setActiveModal] = useState<'sandwiches' | 'trays' | 'sweets' | null>(null);
   const [isSpecialOrderOpen, setIsSpecialOrderOpen] = useState(false);
-  const [isGlobalSummaryOpen, setIsGlobalSummaryOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '', notes: '' });
   const [specialRequest, setSpecialRequest] = useState({ message: '', phone: '', urgency: 'normal' });
   const [showSuccess, setShowSuccess] = useState(false);
@@ -127,7 +127,7 @@ const App: React.FC = () => {
         setShowSuccess(true);
         setTimeout(() => {
           setShowSuccess(false);
-          setIsGlobalSummaryOpen(false);
+          setIsCartOpen(false);
           setSandwichState({ quantities: {}, sauceQuantity: 0, breadChoices: {} });
           setTrayState({ quantities: {}, sauceQuantity: 0 });
           setSweetState({ quantities: {}, sauceQuantity: 0 });
@@ -222,7 +222,7 @@ const App: React.FC = () => {
             <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10">
               <Hero />
               
-              <section className="mt-12">
+              <section id="ordering-section" className="mt-12">
                 <motion.h2 initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} className="text-3xl md:text-5xl font-normal text-center mb-12 text-[#FAB520] font-['Lalezar']">عايز تاكل إيه يا عم؟ 🤤</motion.h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
@@ -256,7 +256,7 @@ const App: React.FC = () => {
                       </div>
                     </div>
                     <button 
-                      onClick={() => setActiveModal(Object.keys(sandwichState.quantities).some(k => sandwichState.quantities[k] > 0) ? 'sandwiches' : 'trays')}
+                      onClick={() => setIsCartOpen(true)}
                       className="w-full py-5 bg-[#FAB520] text-black font-bold text-2xl rounded-3xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform font-['Lalezar']"
                     >
                       <ShoppingBasket className="w-8 h-8" />
@@ -294,19 +294,24 @@ const App: React.FC = () => {
               </section>
             </main>
 
-            {/* Special Order Modal */}
+            {/* Special Order Modal (Catering) - Improved Mobile Compatibility */}
             <AnimatePresence>
               {isSpecialOrderOpen && (
-                <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4">
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSpecialOrderOpen(false)} className="absolute inset-0 bg-black/95 backdrop-blur-xl" />
-                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-8 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)]">
-                    <button onClick={() => setIsSpecialOrderOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white"><X className="w-6 h-6" /></button>
-                    <div className="flex flex-col items-center mb-8">
+                <div className="fixed inset-0 z-[4000] flex items-center justify-center overflow-y-auto px-4 py-6 md:p-10">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSpecialOrderOpen(false)} className="fixed inset-0 bg-black/95 backdrop-blur-xl" />
+                  <motion.div 
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }} 
+                    animate={{ scale: 1, opacity: 1, y: 0 }} 
+                    exit={{ scale: 0.9, opacity: 0, y: 20 }} 
+                    className="relative w-full max-w-lg bg-[#0c0c0c] rounded-[2.5rem] border-2 border-[#FAB520] p-6 md:p-10 shadow-[0_0_80px_rgba(250,181,32,0.3)] z-[4001] max-h-[90vh] overflow-y-auto"
+                  >
+                    <button onClick={() => setIsSpecialOrderOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white p-2"><X className="w-6 h-6" /></button>
+                    <div className="flex flex-col items-center mb-8 pt-4">
                        <img src={LOGO_URL} className="w-16 h-16 object-contain mb-4" alt="" />
-                       <h2 className="text-3xl font-normal font-['Lalezar'] text-[#FAB520]">طلبات خاصة وعزومات</h2>
-                       <p className="text-gray-400 text-center mt-2 font-bold">اكتب اللي نفسك فيه ورقمك، وهنتواصل معاك فوراً لتحديد السعر والوقت!</p>
+                       <h2 className="text-3xl font-normal font-['Lalezar'] text-[#FAB520] text-center leading-tight">طلبات خاصة وعزومات</h2>
+                       <p className="text-gray-400 text-center mt-2 font-bold text-sm">اكتب اللي نفسك فيه ورقمك، وهنتواصل معاك فوراً!</p>
                     </div>
-                    <form onSubmit={handleSpecialSubmit} className="space-y-5">
+                    <form onSubmit={handleSpecialSubmit} className="space-y-5 pb-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-400 mb-2 mr-2">إيه الأكلة اللي في نفسك؟</label>
                         <textarea 
@@ -314,7 +319,7 @@ const App: React.FC = () => {
                           value={specialRequest.message}
                           onChange={e => setSpecialRequest(s => ({...s, message: e.target.value}))}
                           placeholder="مثلاً: عايز حلة محشي مشكل وعزومة لـ 10 أفراد..."
-                          className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white"
+                          className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white text-base"
                         />
                       </div>
                       
@@ -326,8 +331,8 @@ const App: React.FC = () => {
                          >
                             <Zap className={`w-6 h-6 ${specialRequest.urgency === 'urgent' ? 'text-[#FAB520]' : 'text-gray-500'}`} />
                             <div className="text-center">
-                               <p className="font-bold text-sm">مستعجل؟</p>
-                               <p className="text-[10px] opacity-60">(بيزود السعر شوية)</p>
+                               <p className={`font-bold text-sm ${specialRequest.urgency === 'urgent' ? 'text-white' : 'text-gray-400'}`}>مستعجل؟</p>
+                               <p className="text-[10px] opacity-60">(بيزود السعر)</p>
                             </div>
                          </button>
                          <button 
@@ -337,7 +342,7 @@ const App: React.FC = () => {
                          >
                             <Clock className={`w-6 h-6 ${specialRequest.urgency === 'normal' ? 'text-[#FAB520]' : 'text-gray-500'}`} />
                             <div className="text-center">
-                               <p className="font-bold text-sm">تحديد موعد</p>
+                               <p className={`font-bold text-sm ${specialRequest.urgency === 'normal' ? 'text-white' : 'text-gray-400'}`}>تحديد موعد</p>
                                <p className="text-[10px] opacity-60">(الأسعار العادية)</p>
                             </div>
                          </button>
@@ -351,7 +356,7 @@ const App: React.FC = () => {
                           value={specialRequest.phone}
                           onChange={e => setSpecialRequest(s => ({...s, phone: e.target.value}))}
                           placeholder="01XXXXXXXXX"
-                          className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-white"
+                          className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-white text-lg"
                         />
                       </div>
                       <button 
@@ -367,10 +372,101 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Success Message */}
+            {/* Final Cart Drawer - Ensuring it's Always Accessible */}
+            <AnimatePresence>
+              {isCartOpen && (
+                <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-black/98 backdrop-blur-3xl" />
+                  <motion.div 
+                    initial={{ y: 100, opacity: 0 }} 
+                    animate={{ y: 0, opacity: 1 }} 
+                    exit={{ y: 100, opacity: 0 }} 
+                    className="relative w-full max-w-xl bg-[#0c0c0c] rounded-[3rem] border-2 border-[#FAB520] p-6 md:p-10 shadow-2xl flex flex-col max-h-[90vh]"
+                  >
+                    <button onClick={() => setIsCartOpen(false)} className="absolute top-6 left-6 text-white/40 hover:text-white p-2"><X className="w-6 h-6" /></button>
+                    <div className="text-center mb-8 pt-4">
+                       <h2 className="text-4xl font-normal font-['Lalezar'] text-[#FAB520]">سلة أكلة يا عم</h2>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto space-y-4 px-2 mb-6 scrollbar-hide">
+                      {fullOrderSummary.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10">
+                           <div className="flex flex-col">
+                              <span className="font-bold text-lg text-white">{item.name}</span>
+                              <span className="text-xs text-[#FAB520]">{item.quantity} × {item.price} ج.م</span>
+                              {item.bread && <span className="text-[10px] text-gray-500">عيش {item.bread === 'baladi' ? 'بلدي' : 'فينو فرنسي'}</span>}
+                           </div>
+                           <div className="flex items-center gap-3">
+                              <span className="font-bold text-lg">{item.quantity * item.price} ج.م</span>
+                              <button onClick={() => removeGlobalItem(item.name, item.category)} className="p-2 text-red-500/50 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                           </div>
+                        </div>
+                      ))}
+                      <div className="flex justify-between items-center p-4 bg-[#FAB520]/10 rounded-2xl border border-[#FAB520]/20">
+                         <span className="font-bold text-gray-300">خدمة توصيل يا عم</span>
+                         <span className="font-bold text-[#FAB520]">{DELIVERY_FEE} ج.م</span>
+                      </div>
+                    </div>
+
+                    <form onSubmit={handleFinalSubmit} className="space-y-4 pt-4 border-t border-white/10">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                         <input required type="text" value={userInfo.name} onChange={e => setUserInfo(u => ({...u, name: e.target.value}))} placeholder="الاسم" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
+                         <input required type="tel" value={userInfo.phone} onChange={e => setUserInfo(u => ({...u, phone: e.target.value}))} placeholder="رقم التليفون" className="bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
+                      </div>
+                      <input required type="text" value={userInfo.address} onChange={e => setUserInfo(u => ({...u, address: e.target.value}))} placeholder="العنوان بالتفصيل" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-white" />
+                      
+                      <div className="flex justify-between items-center mb-2 px-2">
+                         <span className="text-xl font-bold text-gray-400">الإجمالي الكلي:</span>
+                         <span className="text-3xl font-bold text-[#FAB520]">{globalTotal} ج.م</span>
+                      </div>
+
+                      <button 
+                        disabled={isSubmitting}
+                        className="w-full py-5 bg-[#FAB520] text-black rounded-2xl font-['Lalezar'] text-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                      >
+                        {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Send className="w-6 h-6" />}
+                        <span>أكد الأكلة يا عم!</span>
+                      </button>
+                    </form>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+
+            {/* Floating Cart Button - Ensuring Always Accessible */}
+            <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[4500]">
+              <motion.button 
+                whileHover={{ scale: 1.1 }} 
+                whileTap={{ scale: 0.9 }} 
+                onClick={() => {
+                  if (totalItemCount > 0) {
+                    setIsCartOpen(true);
+                  } else {
+                    const el = document.getElementById('ordering-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }} 
+                className="bg-[#FAB520] text-black p-4 md:p-6 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black"
+              >
+                <div className="relative">
+                  <ShoppingBasket className="w-6 h-6 md:w-9 md:h-9" />
+                  {totalItemCount > 0 && (
+                    <span className="absolute -top-3 -right-3 bg-red-600 text-white text-[11px] w-6 h-6 rounded-full flex items-center justify-center border-2 border-white font-bold">
+                      {totalItemCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xl font-bold hidden sm:inline">سلة يا عم</span>
+              </motion.button>
+            </div>
+
+            <SpecialModal isOpen={activeModal === 'sandwiches'} onClose={() => setActiveModal(null)} title="ركن السندوتشات" image="https://sayedsamkary.com/unnamed.jpg" type="sandwiches" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sandwichState} onUpdateState={(ns) => setSandwichState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={SANDWICH_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+            <SpecialModal isOpen={activeModal === 'trays'} onClose={() => setActiveModal(null)} title="صواني وطواجن" image="https://sayedsamkary.com/%D8%B5%D9%8A%D9%86%D9%8A%D8%A9%20%D9%83%D9%88%D8%B3%D8%A9%20%D8%A8%D8%A7%D9%84%D8%A8%D8%B4%D8%A7%D9%85%D9%84.jpg" type="trays" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={trayState} onUpdateState={(ns) => setTrayState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={TRAY_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+            <SpecialModal isOpen={activeModal === 'sweets'} onClose={() => setActiveModal(null)} title="حلويات يا عم" image="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" type="sweets" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sweetState} onUpdateState={(ns) => setSweetState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={SWEET_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+
             <AnimatePresence>
               {showSuccess && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[5000] bg-black flex flex-col items-center justify-center p-8 text-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[6000] bg-black flex flex-col items-center justify-center p-8 text-center">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><HeartHandshake className="w-16 h-16 text-black" /></motion.div>
                   <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
                   <p className="text-xl text-gray-400 font-bold mb-2">استلمنا طلبك وبنجهزهولك 🤝🔥</p>
@@ -378,32 +474,6 @@ const App: React.FC = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[100]">
-              <motion.button 
-                whileHover={{ scale: 1.1 }} 
-                whileTap={{ scale: 0.9 }} 
-                onClick={() => {
-                  const hasItems = totalItemCount > 0;
-                  if (hasItems) {
-                    setActiveModal('sandwiches');
-                  } else {
-                    document.getElementById('ordering-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }} 
-                className="bg-[#FAB520] text-black p-4 md:p-5 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black"
-              >
-                <div className="relative">
-                  <ShoppingBasket className="w-6 h-6 md:w-8 md:h-8" />
-                  {totalItemCount > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{totalItemCount}</span>}
-                </div>
-                <span className="text-lg font-bold hidden sm:inline">السلة يا عم</span>
-              </motion.button>
-            </div>
-
-            <SpecialModal isOpen={activeModal === 'sandwiches'} onClose={() => setActiveModal(null)} title="ركن السندوتشات" image="https://sayedsamkary.com/unnamed.jpg" type="sandwiches" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sandwichState} onUpdateState={(ns) => setSandwichState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={SANDWICH_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
-            <SpecialModal isOpen={activeModal === 'trays'} onClose={() => setActiveModal(null)} title="صواني وطواجن" image="https://sayedsamkary.com/%D8%B5%D9%8A%D9%86%D9%8A%D8%A9%20%D9%83%D9%88%D8%B3%D8%A9%20%D8%A8%D8%A7%D9%84%D8%A8%D8%B4%D8%A7%D9%85%D9%84.jpg" type="trays" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={trayState} onUpdateState={(ns) => setTrayState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={TRAY_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
-            <SpecialModal isOpen={activeModal === 'sweets'} onClose={() => setActiveModal(null)} title="حلويات يا عم" image="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" type="sweets" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sweetState} onUpdateState={(ns) => setSweetState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={SWEET_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
 
             <footer className="py-16 text-center text-gray-700 bg-black/50 border-t border-white/5 relative z-10">
               <div className="mb-8 flex flex-col items-center gap-4">
