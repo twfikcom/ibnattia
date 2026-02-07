@@ -37,19 +37,21 @@ const App: React.FC = () => {
     sauceQuantity: 0
   });
 
-  // Preloader Logic
+  // Preloader Logic - Slowed down significantly
   useEffect(() => {
     const timer = setInterval(() => {
       setLoadProgress(prev => {
-        const next = prev + (Math.random() * 15);
+        // Smaller increments for a more stable/slower feel
+        const next = prev + (Math.random() * 6);
         if (next >= 100) {
           clearInterval(timer);
-          setTimeout(() => setLoading(false), 500);
+          // Longer pause at 100% to let animations finish
+          setTimeout(() => setLoading(false), 1200);
           return 100;
         }
         return next;
       });
-    }, 150);
+    }, 200);
 
     return () => clearInterval(timer);
   }, []);
@@ -97,7 +99,6 @@ const App: React.FC = () => {
       if (q > 0) summary.push({ name: item.name, quantity: q, price: item.price, category: 'sweets' });
     });
     
-    // Add sauces if they exist across states (assuming we only want one main sauce counter or cumulative)
     const totalSauce = sandwichState.sauceQuantity;
     if (totalSauce > 0) {
       summary.push({ name: 'صوص أعجوبة السحري', quantity: totalSauce, price: SAUCE_PRICE, category: 'extra' });
@@ -180,27 +181,31 @@ const App: React.FC = () => {
                           style={{ width: `${loadProgress}%` }}
                         />
                     </div>
-                    {/* Character-by-character animation */}
-                    <motion.div 
-                      className="text-[#FAB520] font-black text-2xl md:text-4xl font-['Lalezar'] drop-shadow-[0_0_15px_rgba(250,181,32,0.4)] flex gap-1"
-                      initial="hidden"
-                      animate="visible"
-                      variants={{
-                        visible: { transition: { staggerChildren: 0.1 } }
-                      }}
-                    >
-                      {loaderText.split('').map((char, i) => (
-                        <motion.span 
-                          key={i}
+                    {/* Character-by-character animation with conditional rendering delay */}
+                    <AnimatePresence>
+                      {loadProgress > 35 && (
+                        <motion.div 
+                          className="text-[#FAB520] font-black text-2xl md:text-4xl font-['Lalezar'] drop-shadow-[0_0_15px_rgba(250,181,32,0.4)] flex gap-1"
+                          initial="hidden"
+                          animate="visible"
                           variants={{
-                            hidden: { opacity: 0, y: 10 },
-                            visible: { opacity: 1, y: 0 }
+                            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } }
                           }}
                         >
-                          {char}
-                        </motion.span>
-                      ))}
-                    </motion.div>
+                          {loaderText.split('').map((char, i) => (
+                            <motion.span 
+                              key={i}
+                              variants={{
+                                hidden: { opacity: 0, y: 10 },
+                                visible: { opacity: 1, y: 0 }
+                              }}
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                 </div>
             </motion.div>
             <div className="absolute bottom-10 text-white/20 font-bold text-sm tracking-widest uppercase">Ya3m.com Delivery</div>
@@ -215,11 +220,10 @@ const App: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
           >
-            {/* Background Entertainment Layer */}
+            {/* Background Layer */}
             <div className="fixed inset-0 pointer-events-none z-0">
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 50, repeat: Infinity, ease: "linear" }} className="absolute -top-1/4 -right-1/4 w-[150%] h-[150%] border-[2px] border-[#FAB520]/5 rounded-full blur-2xl" />
               <motion.div animate={{ x: [-100, window.innerWidth + 100], rotate: [0, 10, -10, 0] }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }} className="absolute top-[20%] text-5xl opacity-30 select-none">🛵💨</motion.div>
-              <motion.div animate={{ y: [window.innerHeight, -100], x: [100, 150] }} transition={{ duration: 12, repeat: Infinity, ease: "linear" }} className="absolute text-4xl opacity-10 select-none">🍟</motion.div>
             </div>
 
             <main className="max-w-7xl mx-auto px-4 pt-4 relative z-10 pb-32">
@@ -259,7 +263,6 @@ const App: React.FC = () => {
               </section>
             </main>
 
-            {/* Floating Buttons */}
             <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[100]">
               <motion.button 
                 whileHover={{ scale: 1.1 }}
@@ -284,7 +287,6 @@ const App: React.FC = () => {
               </motion.button>
             </div>
 
-            {/* Cart Drawer & Modals */}
             <AnimatePresence>
               {isGlobalSummaryOpen && (
                 <div className="fixed inset-0 z-[1000] flex justify-end items-stretch overflow-hidden">
@@ -323,24 +325,9 @@ const App: React.FC = () => {
                               </div>
                             </motion.div>
                           ))}
-                          <div className="p-4 bg-[#FAB520]/5 rounded-xl border border-dashed border-[#FAB520]/30 flex justify-between items-center text-[#FAB520] font-bold text-xs"><div className="flex items-center gap-2"><Truck className="w-4 h-4" /><span>ملحوظة: مصاريف التوصيل</span></div><span className="text-base">{DELIVERY_FEE} ج.م</span></div>
                         </div>
                       )}
                     </div>
-                    {fullOrderSummary.length > 0 && (
-                      <div className="p-5 md:p-6 border-t border-[#FAB520]/20 bg-black/80 space-y-4 pb-10">
-                        <div className="flex justify-between items-end mb-1 px-1"><div className="flex flex-col"><span className="text-sm font-bold text-gray-500">الحساب كله:</span><div className="flex items-center gap-1 text-[10px] text-[#FAB520]/60"><AlertCircle className="w-2 h-2" /><span>شامل التوصيل</span></div></div><span className="text-3xl font-bold text-[#FAB520]">{globalTotal} ج.م</span></div>
-                        <form onSubmit={handleFinalSubmit} className="space-y-3">
-                          <input required placeholder="اسمك" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-sm" value={userInfo.name} onChange={e => setUserInfo({...userInfo, name: e.target.value})} />
-                          <input required type="tel" placeholder="تليفونك" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-sm" value={userInfo.phone} onChange={e => setUserInfo({...userInfo, phone: e.target.value})} />
-                          <input required placeholder="العنوان فين بالضبط؟" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-sm" value={userInfo.address} onChange={e => setUserInfo({...userInfo, address: e.target.value})} />
-                          <div className="relative group">
-                            <textarea placeholder="حابب تقول حاجة قبل الطلب؟" className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-[#FAB520] font-bold text-sm resize-none h-20" value={userInfo.notes} onChange={e => setUserInfo({...userInfo, notes: e.target.value})} />
-                          </div>
-                          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={isSubmitting} className="w-full py-4 bg-[#FAB520] text-black font-bold text-xl rounded-2xl shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 mt-2">{isSubmitting ? <Loader2 className="animate-spin w-6 h-6" /> : <Send className="w-6 h-6" />}{isSubmitting ? 'جاري الطيران...' : 'اطلب الآن يا عم!'}</motion.button>
-                        </form>
-                      </div>
-                    )}
                   </motion.div>
                 </div>
               )}
@@ -355,7 +342,7 @@ const App: React.FC = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[5000] bg-black flex flex-col items-center justify-center p-8 text-center">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><Send className="w-16 h-16 text-black" /></motion.div>
                   <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">طلبك طار عندنا!</h2>
-                  <p className="text-xl text-gray-400 font-bold">هيكون عندك خلال 25 دقيقة بالضبط 🛵💨</p>
+                  <p class="text-xl text-gray-400 font-bold">هيكون عندك خلال 25 دقيقة بالضبط 🛵💨</p>
                 </motion.div>
               )}
             </AnimatePresence>

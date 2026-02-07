@@ -44,9 +44,8 @@ const Hero: React.FC = () => {
         className="relative z-10"
       >
         <h1 className="text-5xl md:text-7xl font-normal mb-6 leading-[1.1] tracking-tight font-['Lalezar'] group-hover:text-[#FAB520] transition-colors">
-          أسرع دليفري في <br/> 
-          {/* Fixed: Use className instead of class for React compatibility */}
-          <span className="text-[#FAB520] drop-shadow-[0_5px_15_rgba(250,181,32,0.3)]">مصر يا عم!</span>
+          أكل بيتي <br/> 
+          <span className="text-[#FAB520] drop-shadow-[0_5px_15px_rgba(250,181,32,0.3)]">عالي الجودة حسب الطلب</span>
         </h1>
         
         <div className="flex flex-col items-center gap-4">

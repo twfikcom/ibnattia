@@ -59,29 +59,33 @@ window.scrollToMenu = function() {
   }
 };
 
-// Preloader Logic
+// Preloader Logic - Slowed down and delayed text display
 function startPreloader() {
   const loaderBar = document.getElementById('loader-bar');
   const preloader = document.getElementById('preloader');
   const mainContent = document.getElementById('main-content');
+  const dastoorText = document.querySelector('.animate-dastoor');
   let progress = 0;
 
   const interval = setInterval(() => {
-    progress += Math.random() * 25;
+    // Slower progress step
+    progress += Math.random() * 8;
+    
     if (progress >= 100) {
       progress = 100;
       clearInterval(interval);
+      // Wait longer at 100% to ensure animations are seen
       setTimeout(() => {
         preloader.classList.add('opacity-0');
         setTimeout(() => {
           preloader.style.display = 'none';
           mainContent.classList.remove('opacity-0');
           mainContent.classList.add('opacity-100');
-        }, 500);
-      }, 300);
+        }, 800);
+      }, 1000);
     }
     loaderBar.style.width = `${progress}%`;
-  }, 100);
+  }, 150);
 }
 
 // Render Sandwiches directly on home page
@@ -96,13 +100,11 @@ function renderSandwiches() {
     const noBreadOptions = ['حواوشي يا عم', 'سندوتش فراخ استربس', 'صينية شهية لفرد واحد', 'مكرونة بالبشامل لفرد واحد', 'كرات بطاطس بالجبنة لفرد واحد'];
     const showBread = !noBreadOptions.includes(item.name);
     
-    // Lazy load everything except first 2 items for better LCP
     const isLazy = index > 1;
 
     return `
       <div class="p-4 md:p-5 rounded-[2.5rem] border-2 transition-all duration-300 ${qty > 0 ? 'bg-white/5 border-[#FAB520] shadow-2xl scale-[1.01]' : 'bg-white/5 border-transparent'}">
         <div class="flex flex-col sm:flex-row items-center gap-5">
-          <!-- Product Image Container with Skeleton -->
           <div class="w-full sm:w-32 h-32 shrink-0 rounded-[2rem] overflow-hidden border-2 border-white/5 shadow-lg group bg-white/5 relative">
              <div class="skeleton-loader absolute inset-0"></div>
              <img 
@@ -115,7 +117,6 @@ function renderSandwiches() {
                decoding="async">
           </div>
 
-          <!-- Product Details -->
           <div class="flex-1 text-center sm:text-right">
             <h3 class="text-xl md:text-2xl font-['Lalezar'] mb-1">${item.name}</h3>
             <p class="text-[#FAB520] font-bold text-lg">${item.price} ج.م</p>
@@ -123,7 +124,6 @@ function renderSandwiches() {
             ${item.name === 'مكرونة بالبشامل لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">أحلى مكرونة بشاميل سخنة من يا عم دوت كوم</p>' : ''}
           </div>
           
-          <!-- Controls -->
           <div class="flex items-center gap-4 bg-black p-2 rounded-2xl border border-white/10">
             <button onclick="updateQty('${item.name}', -1, ${item.price})" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="أقل من ${item.name}"><i data-lucide="minus" class="w-5 h-5"></i></button>
             <span class="text-xl font-bold w-8 text-center text-white" id="qty-${item.name}">${qty}</span>
