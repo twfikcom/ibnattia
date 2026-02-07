@@ -5,7 +5,7 @@ import Hero from './components/Hero';
 import SpecialModal from './components/SpecialModals';
 import { LOGO_URL, SANDWICH_ITEMS, TRAY_ITEMS, SWEET_ITEMS } from './constants';
 import { SpecialOrderState } from './types';
-import { Utensils, IceCream, Sandwich, ShoppingBasket, X, Trash2, Send, Plus, Minus, Truck, Loader2, Star, Sparkles, MapPin, Phone, User, AlertCircle, MessageSquare, Facebook, ChefHat, HeartHandshake } from 'lucide-react';
+import { Utensils, IceCream, Sandwich, ShoppingBasket, X, Trash2, Send, Plus, Minus, Truck, Loader2, Star, Sparkles, MapPin, Phone, User, AlertCircle, MessageSquare, Facebook, ChefHat, HeartHandshake, Clock, Zap } from 'lucide-react';
 
 const DELIVERY_FEE = 20;
 const SAUCE_PRICE = 20;
@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [isSpecialOrderOpen, setIsSpecialOrderOpen] = useState(false);
   const [isGlobalSummaryOpen, setIsGlobalSummaryOpen] = useState(false);
   const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '', notes: '' });
-  const [specialRequest, setSpecialRequest] = useState({ message: '', phone: '' });
+  const [specialRequest, setSpecialRequest] = useState({ message: '', phone: '', urgency: 'normal' });
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -158,13 +158,14 @@ const App: React.FC = () => {
         body: JSON.stringify({
             النوع: "عزومة / طلب خاص",
             الطلب: specialRequest.message,
-            التليفون: specialRequest.phone
+            التليفون: specialRequest.phone,
+            الحالة: specialRequest.urgency === 'urgent' ? 'مستعجل' : 'موعد عادي'
         })
       });
       if (response.ok) {
         setShowSuccess(true);
         setIsSpecialOrderOpen(false);
-        setSpecialRequest({ message: '', phone: '' });
+        setSpecialRequest({ message: '', phone: '', urgency: 'normal' });
         setTimeout(() => {
           setShowSuccess(false);
           setIsSubmitting(false);
@@ -238,7 +239,7 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Order Summary Block - Consistent with Static Version */}
+              {/* Order Summary Block */}
               <AnimatePresence>
                 {globalTotal > 0 && (
                   <motion.div 
@@ -265,7 +266,7 @@ const App: React.FC = () => {
                 )}
               </AnimatePresence>
 
-              {/* Special Orders / Catering Section - Moved to Bottom before Footer */}
+              {/* Special Orders / Catering Section */}
               <section className="mt-20 mb-20">
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
@@ -305,17 +306,43 @@ const App: React.FC = () => {
                        <h2 className="text-3xl font-normal font-['Lalezar'] text-[#FAB520]">طلبات خاصة وعزومات</h2>
                        <p className="text-gray-400 text-center mt-2 font-bold">اكتب اللي نفسك فيه ورقمك، وهنتواصل معاك فوراً لتحديد السعر والوقت!</p>
                     </div>
-                    <form onSubmit={handleSpecialSubmit} className="space-y-4">
+                    <form onSubmit={handleSpecialSubmit} className="space-y-5">
                       <div>
                         <label className="block text-sm font-bold text-gray-400 mb-2 mr-2">إيه الأكلة اللي في نفسك؟</label>
                         <textarea 
                           required
                           value={specialRequest.message}
                           onChange={e => setSpecialRequest(s => ({...s, message: e.target.value}))}
-                          placeholder="مثلاً: عايز صينية محشي مشكل وعزومة لـ 10 أفراد..."
+                          placeholder="مثلاً: عايز حلة محشي مشكل وعزومة لـ 10 أفراد..."
                           className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white"
                         />
                       </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                         <button 
+                           type="button"
+                           onClick={() => setSpecialRequest(s => ({...s, urgency: 'urgent'}))}
+                           className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${specialRequest.urgency === 'urgent' ? 'border-[#FAB520] bg-[#FAB520]/10' : 'border-white/5 bg-white/5'}`}
+                         >
+                            <Zap className={`w-6 h-6 ${specialRequest.urgency === 'urgent' ? 'text-[#FAB520]' : 'text-gray-500'}`} />
+                            <div className="text-center">
+                               <p className="font-bold text-sm">مستعجل؟</p>
+                               <p className="text-[10px] opacity-60">(بيزود السعر شوية)</p>
+                            </div>
+                         </button>
+                         <button 
+                           type="button"
+                           onClick={() => setSpecialRequest(s => ({...s, urgency: 'normal'}))}
+                           className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${specialRequest.urgency === 'normal' ? 'border-[#FAB520] bg-[#FAB520]/10' : 'border-white/5 bg-white/5'}`}
+                         >
+                            <Clock className={`w-6 h-6 ${specialRequest.urgency === 'normal' ? 'text-[#FAB520]' : 'text-gray-500'}`} />
+                            <div className="text-center">
+                               <p className="font-bold text-sm">تحديد موعد</p>
+                               <p className="text-[10px] opacity-60">(الأسعار العادية)</p>
+                            </div>
+                         </button>
+                      </div>
+
                       <div>
                         <label className="block text-sm font-bold text-gray-400 mb-2 mr-2">رقم تليفونك عشان نكلمك</label>
                         <input 
@@ -340,6 +367,18 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
+            {/* Success Message */}
+            <AnimatePresence>
+              {showSuccess && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[5000] bg-black flex flex-col items-center justify-center p-8 text-center">
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><HeartHandshake className="w-16 h-16 text-black" /></motion.div>
+                  <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
+                  <p className="text-xl text-gray-400 font-bold mb-2">استلمنا طلبك وبنجهزهولك 🤝🔥</p>
+                  <p className="text-lg text-[#FAB520]/60 font-bold">فريقنا هيكلمك فوراً لتحديد التفاصيل والتكلفة</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[100]">
               <motion.button 
                 whileHover={{ scale: 1.1 }} 
@@ -347,7 +386,6 @@ const App: React.FC = () => {
                 onClick={() => {
                   const hasItems = totalItemCount > 0;
                   if (hasItems) {
-                    // Open the most relevant category or just sandwiches by default
                     setActiveModal('sandwiches');
                   } else {
                     document.getElementById('ordering-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -366,16 +404,6 @@ const App: React.FC = () => {
             <SpecialModal isOpen={activeModal === 'sandwiches'} onClose={() => setActiveModal(null)} title="ركن السندوتشات" image="https://sayedsamkary.com/unnamed.jpg" type="sandwiches" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sandwichState} onUpdateState={(ns) => setSandwichState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={SANDWICH_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
             <SpecialModal isOpen={activeModal === 'trays'} onClose={() => setActiveModal(null)} title="صواني وطواجن" image="https://sayedsamkary.com/%D8%B5%D9%8A%D9%86%D9%8A%D8%A9%20%D9%83%D9%88%D8%B3%D8%A9%20%D8%A8%D8%A7%D9%84%D8%A8%D8%B4%D8%A7%D9%85%D9%84.jpg" type="trays" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={trayState} onUpdateState={(ns) => setTrayState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={TRAY_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
             <SpecialModal isOpen={activeModal === 'sweets'} onClose={() => setActiveModal(null)} title="حلويات يا عم" image="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" type="sweets" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sweetState} onUpdateState={(ns) => setSweetState(ns)} onFinalSubmit={handleFinalSubmit} initialItems={SWEET_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
-
-            <AnimatePresence>
-              {showSuccess && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[5000] bg-black flex flex-col items-center justify-center p-8 text-center">
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><HeartHandshake className="w-16 h-16 text-black" /></motion.div>
-                  <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
-                  <p className="text-xl text-gray-400 font-bold">هنتواصل معاك فوراً لتحديد التفاصيل والتكلفة 🤝🔥</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             <footer className="py-16 text-center text-gray-700 bg-black/50 border-t border-white/5 relative z-10">
               <div className="mb-8 flex flex-col items-center gap-4">

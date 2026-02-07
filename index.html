@@ -120,7 +120,7 @@
                 </button>
             </div>
 
-            <!-- Catering Section (Now after summary and before footer) -->
+            <!-- Catering Section -->
             <section class="mt-20 mb-20">
                 <div class="bg-gradient-to-r from-[#FAB520] to-[#facc15] p-8 md:p-12 rounded-[3rem] text-black text-center shadow-[0_20px_60px_rgba(250,181,32,0.4)] relative overflow-hidden group">
                     <div class="absolute -top-10 -right-10 opacity-10 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
@@ -172,8 +172,26 @@
             <form id="special-request-form" class="space-y-4">
               <div>
                 <label class="block text-sm font-bold text-gray-400 mb-2 mr-2">إيه الأكلة اللي في نفسك؟</label>
-                <textarea required id="special-msg" placeholder="مثلاً: عايز صينية محشي مشكل وعزومة لـ 10 أفراد..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white"></textarea>
+                <textarea required id="special-msg" placeholder="مثلاً: عايز حلة محشي مشكل وعزومة لـ 10 أفراد..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] h-32 resize-none font-bold text-white"></textarea>
               </div>
+              
+              <div class="grid grid-cols-2 gap-3">
+                 <button type="button" id="urgency-btn-urgent" onclick="setUrgency('urgent')" class="p-4 rounded-2xl border-2 border-white/5 bg-white/5 flex flex-col items-center gap-2 transition-all">
+                    <i data-lucide="zap" class="w-6 h-6 text-gray-500"></i>
+                    <div class="text-center">
+                       <p class="font-bold text-sm text-gray-300">مستعجل؟</p>
+                       <p class="text-[10px] opacity-40">(بيزود السعر شوية)</p>
+                    </div>
+                 </button>
+                 <button type="button" id="urgency-btn-normal" onclick="setUrgency('normal')" class="p-4 rounded-2xl border-2 border-[#FAB520] bg-[#FAB520]/10 flex flex-col items-center gap-2 transition-all">
+                    <i data-lucide="clock" class="w-6 h-6 text-[#FAB520]"></i>
+                    <div class="text-center">
+                       <p class="font-bold text-sm text-[#FAB520]">تحديد موعد</p>
+                       <p class="text-[10px] opacity-60">(الأسعار العادية)</p>
+                    </div>
+                 </button>
+              </div>
+
               <div>
                 <label class="block text-sm font-bold text-gray-400 mb-2 mr-2">رقم تليفونك</label>
                 <input required id="special-phone" type="tel" placeholder="01XXXXXXXXX" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#FAB520] font-bold text-white">
@@ -184,6 +202,16 @@
               </button>
             </form>
         </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-screen" class="fixed inset-0 z-[5000] bg-black hidden flex-col items-center justify-center p-8 text-center">
+        <div class="bg-[#FAB520] p-12 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)] text-black">
+            <i data-lucide="heart-handshake" class="w-24 h-24"></i>
+        </div>
+        <h2 class="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
+        <p class="text-xl text-gray-400 font-bold mb-2">استلمنا طلبك وبنجهزهولك 🤝🔥</p>
+        <p class="text-lg text-[#FAB520]/60 font-bold">فريقنا هيكلمك فوراً لتحديد التفاصيل والتكلفة</p>
     </div>
 
     <script src="script.js"></script>

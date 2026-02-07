@@ -12,6 +12,7 @@ const SANDWICH_ITEMS = [
 
 let cart = {}; 
 let sauceQuantity = 0;
+let currentUrgency = 'normal';
 const DELIVERY_FEE = 20;
 const SAUCE_PRICE = 20;
 
@@ -29,6 +30,34 @@ window.toggleSpecialModal = function() {
   const modal = document.getElementById('special-order-modal');
   if (modal) {
     modal.classList.toggle('hidden');
+  }
+};
+
+window.setUrgency = function(level) {
+  currentUrgency = level;
+  const urgentBtn = document.getElementById('urgency-btn-urgent');
+  const normalBtn = document.getElementById('urgency-btn-normal');
+  
+  if (level === 'urgent') {
+    urgentBtn.classList.replace('border-white/5', 'border-[#FAB520]');
+    urgentBtn.classList.replace('bg-white/5', 'bg-[#FAB520]/10');
+    urgentBtn.querySelector('i').classList.replace('text-gray-500', 'text-[#FAB520]');
+    urgentBtn.querySelector('p').classList.replace('text-gray-300', 'text-[#FAB520]');
+    
+    normalBtn.classList.replace('border-[#FAB520]', 'border-white/5');
+    normalBtn.classList.replace('bg-[#FAB520]/10', 'bg-white/5');
+    normalBtn.querySelector('i').classList.replace('text-[#FAB520]', 'text-gray-500');
+    normalBtn.querySelector('p').classList.replace('text-[#FAB520]', 'text-gray-300');
+  } else {
+    normalBtn.classList.replace('border-white/5', 'border-[#FAB520]');
+    normalBtn.classList.replace('bg-white/5', 'bg-[#FAB520]/10');
+    normalBtn.querySelector('i').classList.replace('text-gray-500', 'text-[#FAB520]');
+    normalBtn.querySelector('p').classList.replace('text-gray-300', 'text-[#FAB520]');
+    
+    urgentBtn.classList.replace('border-[#FAB520]', 'border-white/5');
+    urgentBtn.classList.replace('bg-[#FAB520]/10', 'bg-white/5');
+    urgentBtn.querySelector('i').classList.replace('text-[#FAB520]', 'text-gray-500');
+    urgentBtn.querySelector('p').classList.replace('text-[#FAB520]', 'text-gray-300');
   }
 };
 
@@ -163,7 +192,12 @@ if(specialForm) {
       const response = await fetch("https://formspree.io/f/xdazllep", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ النوع: "عزومة / طلب خاص (HTML)", الطلب: msg, التليفون: phone })
+        body: JSON.stringify({ 
+          النوع: "عزومة / طلب خاص (HTML)", 
+          الطلب: msg, 
+          التليفون: phone,
+          الحالة: currentUrgency === 'urgent' ? 'مستعجل' : 'موعد عادي'
+        })
       });
       if (response.ok) {
         window.toggleSpecialModal();
