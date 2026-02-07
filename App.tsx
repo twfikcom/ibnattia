@@ -185,6 +185,11 @@ const App: React.FC = () => {
     return allQtys.reduce((a, b) => (a || 0) + (b || 0), 0) + sandwichState.sauceQuantity;
   }, [sandwichState, trayState, sweetState]);
 
+  const openCart = () => {
+    setActiveModal(null);
+    setIsCartOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-['Changa'] relative selection:bg-[#FAB520] selection:text-black overflow-x-hidden">
       
@@ -239,7 +244,7 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Order Summary Block - Consistent with Main UI */}
+              {/* Order Summary Block */}
               <AnimatePresence>
                 {globalTotal > 0 && (
                   <motion.div 
@@ -256,7 +261,7 @@ const App: React.FC = () => {
                       </div>
                     </div>
                     <button 
-                      onClick={() => setIsCartOpen(true)}
+                      onClick={openCart}
                       className="w-full py-5 bg-[#FAB520] text-black font-bold text-2xl rounded-3xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform font-['Lalezar']"
                     >
                       <ShoppingBasket className="w-8 h-8" />
@@ -294,7 +299,7 @@ const App: React.FC = () => {
               </section>
             </main>
 
-            {/* Special Order Modal (Catering) - Ensuring Mobile-First Scrolling */}
+            {/* Special Order Modal (Catering) */}
             <AnimatePresence>
               {isSpecialOrderOpen && (
                 <div className="fixed inset-0 z-[8000] flex items-center justify-center px-4 py-10">
@@ -372,10 +377,10 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Final Cart Drawer - Highest Z-Index */}
+            {/* Final Cart Drawer - Increased z-index for maximum visibility */}
             <AnimatePresence>
               {isCartOpen && (
-                <div className="fixed inset-0 z-[9000] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[11000] flex items-center justify-center p-4">
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-black/98 backdrop-blur-3xl" />
                   <motion.div 
                     initial={{ y: 100, opacity: 0 }} 
@@ -433,19 +438,12 @@ const App: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Floating Cart Button - Highest Priority Z-Index */}
+            {/* Floating Cart Button */}
             <div className="fixed bottom-6 left-6 md:bottom-10 md:left-10 flex flex-col items-start gap-4 z-[9999]">
               <motion.button 
                 whileHover={{ scale: 1.1 }} 
                 whileTap={{ scale: 0.9 }} 
-                onClick={() => {
-                  if (totalItemCount > 0) {
-                    setIsCartOpen(true);
-                  } else {
-                    const el = document.getElementById('ordering-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }} 
+                onClick={openCart} 
                 className="bg-[#FAB520] text-black p-4 md:p-6 rounded-full shadow-[0_15px_40px_rgba(250,181,32,0.6)] flex items-center gap-3 border-4 border-black"
               >
                 <div className="relative">
@@ -460,13 +458,13 @@ const App: React.FC = () => {
               </motion.button>
             </div>
 
-            <SpecialModal isOpen={activeModal === 'sandwiches'} onClose={() => setActiveModal(null)} title="ركن السندوتشات" image="https://sayedsamkary.com/unnamed.jpg" type="sandwiches" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sandwichState} onUpdateState={(ns) => setSandwichState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={SANDWICH_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
-            <SpecialModal isOpen={activeModal === 'trays'} onClose={() => setActiveModal(null)} title="صواني وطواجن" image="https://sayedsamkary.com/%D8%B5%D9%8A%D9%86%D9%8A%D8%A9%20%D9%83%D9%88%D8%B3%D8%A9%20%D8%A8%D8%A7%D9%84%D8%A8%D8%B4%D8%A7%D9%85%D9%84.jpg" type="trays" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={trayState} onUpdateState={(ns) => setTrayState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={TRAY_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
-            <SpecialModal isOpen={activeModal === 'sweets'} onClose={() => setActiveModal(null)} title="حلويات يا عم" image="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" type="sweets" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sweetState} onUpdateState={(ns) => setSweetState(ns)} onFinalSubmit={() => setIsCartOpen(true)} initialItems={SWEET_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+            <SpecialModal isOpen={activeModal === 'sandwiches'} onClose={() => setActiveModal(null)} title="ركن السندوتشات" image="https://sayedsamkary.com/unnamed.jpg" type="sandwiches" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sandwichState} onUpdateState={(ns) => setSandwichState(ns)} onFinalSubmit={openCart} initialItems={SANDWICH_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+            <SpecialModal isOpen={activeModal === 'trays'} onClose={() => setActiveModal(null)} title="صواني وطواجن" image="https://sayedsamkary.com/%D8%B5%D9%8A%D9%86%D9%8A%D8%A9%20%D9%83%D9%88%D8%B3%D8%A9%20%D8%A8%D8%A7%D9%84%D8%A8%D8%B4%D8%A7%D9%85%D9%84.jpg" type="trays" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={trayState} onUpdateState={(ns) => setTrayState(ns)} onFinalSubmit={openCart} initialItems={TRAY_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
+            <SpecialModal isOpen={activeModal === 'sweets'} onClose={() => setActiveModal(null)} title="حلويات يا عم" image="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80" type="sweets" globalTotal={globalTotal} subtotal={subtotal} deliveryFee={DELIVERY_FEE} persistentState={sweetState} onUpdateState={(ns) => setSweetState(ns)} onFinalSubmit={openCart} initialItems={SWEET_ITEMS} fullOrderSummary={fullOrderSummary} updateGlobalQuantity={updateGlobalQuantity} removeGlobalItem={removeGlobalItem} />
 
             <AnimatePresence>
               {showSuccess && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center p-8 text-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[12000] bg-black flex flex-col items-center justify-center p-8 text-center">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-[#FAB520] p-10 rounded-full mb-8 shadow-[0_0_100px_rgba(250,181,32,0.6)]"><HeartHandshake className="w-16 h-16 text-black" /></motion.div>
                   <h2 className="text-5xl font-normal font-['Lalezar'] text-[#FAB520] mb-4">وصلت يا عم!</h2>
                   <p className="text-xl text-gray-400 font-bold mb-2">استلمنا طلبك وبنجهزهولك 🤝🔥</p>
