@@ -39,7 +39,7 @@ const SANDWICH_ITEMS = [
 ];
 
 // App State
-let cart = {}; // { itemName: { quantity, price, category, bread } }
+let cart = {}; 
 let sauceQuantity = 0;
 const DELIVERY_FEE = 20;
 const SAUCE_PRICE = 10;
@@ -67,7 +67,7 @@ function startPreloader() {
   let progress = 0;
 
   const interval = setInterval(() => {
-    progress += Math.random() * 20;
+    progress += Math.random() * 25;
     if (progress >= 100) {
       progress = 100;
       clearInterval(interval);
@@ -77,11 +77,11 @@ function startPreloader() {
           preloader.style.display = 'none';
           mainContent.classList.remove('opacity-0');
           mainContent.classList.add('opacity-100');
-        }, 700);
-      }, 500);
+        }, 500);
+      }, 300);
     }
     loaderBar.style.width = `${progress}%`;
-  }, 150);
+  }, 100);
 }
 
 // Render Sandwiches directly on home page
@@ -93,23 +93,25 @@ function renderSandwiches() {
     const qty = cart[item.name]?.quantity || 0;
     const bread = cart[item.name]?.bread || 'baladi';
     
-    // Items that don't need bread choice
     const noBreadOptions = ['حواوشي يا عم', 'سندوتش فراخ استربس', 'صينية شهية لفرد واحد', 'مكرونة بالبشامل لفرد واحد', 'كرات بطاطس بالجبنة لفرد واحد'];
     const showBread = !noBreadOptions.includes(item.name);
     
-    // Lazy load everything except first 2 items for LCP
+    // Lazy load everything except first 2 items for better LCP
     const isLazy = index > 1;
 
     return `
       <div class="p-4 md:p-5 rounded-[2.5rem] border-2 transition-all duration-300 ${qty > 0 ? 'bg-white/5 border-[#FAB520] shadow-2xl scale-[1.01]' : 'bg-white/5 border-transparent'}">
         <div class="flex flex-col sm:flex-row items-center gap-5">
-          <!-- Product Image -->
-          <div class="w-full sm:w-32 h-32 shrink-0 rounded-[2rem] overflow-hidden border-2 border-white/5 shadow-lg group">
+          <!-- Product Image Container with Skeleton -->
+          <div class="w-full sm:w-32 h-32 shrink-0 rounded-[2rem] overflow-hidden border-2 border-white/5 shadow-lg group bg-white/5 relative">
+             <div class="skeleton-loader absolute inset-0"></div>
              <img 
                src="${item.image}" 
                alt="${item.name} - يا عم دليفري" 
-               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+               class="w-full h-full object-cover transition-opacity duration-500 opacity-0"
                ${isLazy ? 'loading="lazy"' : 'fetchpriority="high"'}
+               width="128" height="128"
+               onload="this.classList.remove('opacity-0'); this.previousElementSibling.style.display='none';"
                decoding="async">
           </div>
 
@@ -117,16 +119,15 @@ function renderSandwiches() {
           <div class="flex-1 text-center sm:text-right">
             <h3 class="text-xl md:text-2xl font-['Lalezar'] mb-1">${item.name}</h3>
             <p class="text-[#FAB520] font-bold text-lg">${item.price} ج.م</p>
-            ${item.name === 'صينية شهية لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">تشكيلة كفته وسجق</p>' : ''}
-            ${item.name === 'مكرونة بالبشامل لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">أحلى مكرونة بشاميل سخنة</p>' : ''}
-            ${item.name === 'كرات بطاطس بالجبنة لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">مقرمشة من برة وغرقانة جبنة</p>' : ''}
+            ${item.name === 'صينية شهية لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">تشكيلة يا عم من كفته وسجق</p>' : ''}
+            ${item.name === 'مكرونة بالبشامل لفرد واحد' ? '<p class="text-gray-400 text-xs mt-1">أحلى مكرونة بشاميل سخنة من يا عم دوت كوم</p>' : ''}
           </div>
           
           <!-- Controls -->
           <div class="flex items-center gap-4 bg-black p-2 rounded-2xl border border-white/10">
-            <button onclick="updateQty('${item.name}', -1, ${item.price})" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="تقليل كمية ${item.name}"><i data-lucide="minus" class="w-5 h-5"></i></button>
+            <button onclick="updateQty('${item.name}', -1, ${item.price})" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="أقل من ${item.name}"><i data-lucide="minus" class="w-5 h-5"></i></button>
             <span class="text-xl font-bold w-8 text-center text-white" id="qty-${item.name}">${qty}</span>
-            <button onclick="updateQty('${item.name}', 1, ${item.price})" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="زيادة كمية ${item.name}"><i data-lucide="plus" class="w-5 h-5"></i></button>
+            <button onclick="updateQty('${item.name}', 1, ${item.price})" class="text-[#FAB520] p-1.5 active:scale-125 transition-transform" aria-label="أكثر من ${item.name}"><i data-lucide="plus" class="w-5 h-5"></i></button>
           </div>
         </div>
 
@@ -151,11 +152,9 @@ function updateQty(name, delta, price) {
     delete cart[name];
   }
   
-  // Update UI quantity directly for speed
   const qtyEl = document.getElementById(`qty-${name}`);
   if (qtyEl) qtyEl.innerText = cart[name]?.quantity || 0;
   
-  // Re-render only bread container visibility
   const breadContainer = document.getElementById(`bread-${name}`);
   if (breadContainer) {
     const qty = cart[name]?.quantity || 0;
@@ -175,7 +174,6 @@ function updateQty(name, delta, price) {
 function setBread(name, type) {
   if (cart[name]) {
     cart[name].bread = type;
-    // Update active state in UI instead of full re-render
     const breadContainer = document.getElementById(`bread-${name}`);
     if (breadContainer) {
       const buttons = breadContainer.querySelectorAll('button');
@@ -239,7 +237,6 @@ function updateMainSummary() {
   }
 }
 
-// Cart Logic (Form Drawer)
 function toggleCart() {
   const overlay = document.getElementById('cart-drawer-overlay');
   const drawer = document.getElementById('cart-drawer');
@@ -263,7 +260,7 @@ function renderCartSummary() {
     container.innerHTML = `
       <div class="flex flex-col items-center justify-center h-full opacity-20 space-y-4">
         <i data-lucide="shopping-basket" class="w-16 h-16"></i>
-        <p class="text-base font-bold text-center">لسه مفيش أكل!</p>
+        <p class="text-base font-bold text-center">يا عم اطلب حاجة تملى السلة!</p>
       </div>
     `;
   } else {
@@ -285,7 +282,7 @@ function renderCartSummary() {
           </div>
         ` : ''}
         <div class="p-3.5 bg-white/5 rounded-xl flex justify-between items-center text-gray-400 text-xs">
-            <span>مصاريف التوصيل</span>
+            <span>مصاريف توصيل يا عم دليفري</span>
             <span>${DELIVERY_FEE} ج.م</span>
         </div>
       </div>
@@ -294,7 +291,6 @@ function renderCartSummary() {
   initIcons();
 }
 
-// Order Form Submission
 const orderForm = document.getElementById('order-form');
 if(orderForm) {
   orderForm.addEventListener('submit', async (e) => {
@@ -309,7 +305,7 @@ if(orderForm) {
     if (!name || !phone || !address) return;
     
     btn.disabled = true;
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 loading-spin"></i><span>جاري الطيران...</span>`;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 loading-spin"></i><span>جاري طيران يا عم دليفري...</span>`;
     initIcons();
   
     try {
@@ -339,7 +335,7 @@ if(orderForm) {
           location.reload();
         }, 4000);
       } else {
-        alert('يا عم حصل غلط في الإرسال، جرب تاني!');
+        alert('يا عم حصل غلط، جرب تاني!');
         btn.disabled = false;
         btn.innerHTML = `<i data-lucide="send" class="w-8 h-8"></i><span>اطلب الآن يا عم!</span>`;
         initIcons();
@@ -353,7 +349,6 @@ if(orderForm) {
   });
 }
 
-// Start Everything
 window.onload = () => {
   startPreloader();
   renderSandwiches();

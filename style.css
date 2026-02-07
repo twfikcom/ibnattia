@@ -9,7 +9,7 @@
     --font-body: 'Changa', sans-serif;
 }
 
-/* Fix FCP (Flash of Invisible Text) */
+/* Optimize FCP and avoid layout shifts */
 @font-face {
     font-family: 'Lalezar';
     font-display: swap;
@@ -22,7 +22,8 @@
 
 body {
     font-family: var(--font-body);
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, .heading-font {
@@ -35,16 +36,29 @@ h1, h2, h3, .heading-font {
 }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
+/* Skeleton Loader Animation */
+@keyframes skeleton-pulse {
+    0% { background-color: rgba(255, 255, 255, 0.05); }
+    50% { background-color: rgba(255, 255, 255, 0.1); }
+    100% { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+.skeleton-loader {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    width: 100%;
+    height: 100%;
+}
+
 /* Preloader Animations */
 @keyframes pulseSlow {
-    0%, 100% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 20px rgba(250,181,32,0.2)); }
-    50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 40px rgba(250,181,32,0.4)); }
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
 }
 .animate-pulse-slow {
     animation: pulseSlow 3s ease-in-out infinite;
 }
 
-/* Typing Animation for Dastoor */
+/* Typing Animation */
 @keyframes typing {
   from { width: 0 }
   to { width: 100% }
@@ -60,7 +74,7 @@ h1, h2, h3, .heading-font {
     white-space: nowrap;
     display: inline-block;
     width: 0;
-    border-left: 3px solid #FAB520; /* Caret effect for RTL */
+    border-left: 3px solid #FAB520;
     animation: 
         typing 1.5s steps(15, end) forwards,
         blink-caret .75s step-end infinite;
@@ -68,10 +82,10 @@ h1, h2, h3, .heading-font {
     text-align: right;
 }
 
-/* Background Animations */
+/* Background Animations (Hardware Accelerated) */
 @keyframes scooterMove {
-    from { transform: translateX(-150px) rotate(0deg); }
-    to { transform: translateX(calc(100vw + 150px)) rotate(0deg); }
+    from { transform: translate3d(-150px, 0, 0); }
+    to { transform: translate3d(calc(100vw + 150px), 0, 0); }
 }
 .scooter {
     animation: scooterMove 15s linear infinite;
@@ -81,59 +95,26 @@ h1, h2, h3, .heading-font {
 }
 
 @keyframes glowPulse {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.2); opacity: 0.5; }
+    0%, 100% { transform: scale3d(1, 1, 1); opacity: 0.3; }
+    50% { transform: scale3d(1.1, 1.1, 1); opacity: 0.4; }
 }
 .glow-bg {
     animation: glowPulse 8s ease-in-out infinite;
-    will-change: transform, opacity;
+    will-change: transform;
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(10deg); }
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -15px, 0); }
 }
 .floating-item {
     animation: float 6s ease-in-out infinite;
     will-change: transform;
 }
 
-@keyframes whatsappPulse {
-    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
-    70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-}
-
-.whatsapp-btn {
-    animation: whatsappPulse 2s infinite;
-}
-
-/* Category Cards Hover */
-.category-card {
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.category-card:hover {
-    transform: translateY(-10px) scale(1.02);
-}
-
-/* Transitions */
-#cart-drawer.open {
-    transform: translateX(0);
-}
-
-#category-modal.open {
-    transform: translateY(0);
-}
-
-.bread-btn-active {
-    background-color: #FAB520 !important;
-    color: black !important;
-    transform: scale(1.02);
-    box-shadow: 0 10px 20px rgba(250, 181, 32, 0.3);
-}
-
+/* Forms and Buttons */
 input::placeholder, textarea::placeholder {
-    color: rgba(156, 163, 175, 0.5);
+    color: rgba(156, 163, 175, 0.4);
 }
 
 .loading-spin {
@@ -143,4 +124,8 @@ input::placeholder, textarea::placeholder {
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+#cart-drawer.open {
+    transform: translate3d(0, 0, 0);
 }
