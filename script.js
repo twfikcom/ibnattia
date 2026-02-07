@@ -1,7 +1,7 @@
 
 // Data Constants
 const SANDWICH_ITEMS = [
-  { name: 'كبدة إسكندراني', price: 40, image: 'https://sayedsamkary.com/%D9%83%D8%A8%D8%AF%D8%A9%D9%8A%D8%A7%D8%B9%D9%85.png' },
+  { name: 'كبدة إسكندراني', price: 40, image: 'https://sayedsamkary.com/%D9%83%D8%A8%D8%AF%D8%A9%D9%8I%D8%A7%D8%B9%D9%85.png' },
   { name: 'سجق بلدي', price: 40, image: 'https://sayedsamkary.com/%D8%B3%D8%AC%D9%82.png' },
   { name: 'حواوشي يا عم', price: 45, image: 'https://sayedsamkary.com/hawwshy.png' },
   { name: 'سندوتش فراخ استربس', price: 120, image: 'https://sayedsamkary.com/unnamed4.jpg' },
@@ -11,83 +11,19 @@ const SANDWICH_ITEMS = [
 ];
 
 let cart = {}; 
-let cateringUrgency = 'normal';
+let sauceQuantity = 0;
 const DELIVERY_FEE = 20;
+const SAUCE_PRICE = 20;
 
 function initIcons() {
   if (window.lucide) window.lucide.createIcons();
 }
 
-// Catering Logic
-window.openSpecialCatering = function() {
-  document.getElementById('special-catering-modal').classList.remove('hidden');
-};
-
-window.closeSpecialCatering = function() {
-  document.getElementById('special-catering-modal').classList.add('hidden');
-};
-
-window.setCatUrgency = function(level) {
-  cateringUrgency = level;
-  const btnUrgent = document.getElementById('btn-urg-urgent');
-  const btnNormal = document.getElementById('btn-urg-normal');
-  const datePicker = document.getElementById('date-picker-container');
-
-  if (level === 'urgent') {
-    btnUrgent.className = "p-4 rounded-xl border border-[#FAB520] bg-[#FAB520]/10 text-[#FAB520] font-bold text-sm transition-all flex items-center justify-center gap-2";
-    btnNormal.className = "p-4 rounded-xl border border-white/10 bg-white/5 font-bold text-sm transition-all flex items-center justify-center gap-2 text-white/40";
-    datePicker.classList.add('hidden');
-  } else {
-    btnNormal.className = "p-4 rounded-xl border border-[#FAB520] bg-[#FAB520]/10 text-[#FAB520] font-bold text-sm transition-all flex items-center justify-center gap-2";
-    btnUrgent.className = "p-4 rounded-xl border border-white/10 bg-white/5 font-bold text-sm transition-all flex items-center justify-center gap-2 text-white/40";
-    datePicker.classList.remove('hidden');
-  }
-};
-
-const cateringForm = document.getElementById('catering-form');
-if (cateringForm) {
-  cateringForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('cat-submit-btn');
-    const msg = document.getElementById('cat-message').value;
-    const name = document.getElementById('cat-name').value;
-    const phone = document.getElementById('cat-phone').value;
-    const date = document.getElementById('cat-date').value;
-
-    btn.disabled = true;
-    btn.innerHTML = `جاري الإرسال...`;
-
-    try {
-      const response = await fetch("https://formspree.io/f/xeelqgpd", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          النوع: "طلب عزومة/أصناف خاصة (HTML)",
-          الاسم: name,
-          التليفون: phone,
-          الطلب: msg,
-          الاستعجال: cateringUrgency === 'urgent' ? 'مستعجل' : 'موعد عادي',
-          الموعد: date || 'غير محدد'
-        })
-      });
-      if (response.ok) {
-        document.getElementById('success-screen').style.display = 'flex';
-        closeSpecialCatering();
-        setTimeout(() => location.reload(), 4000);
-      } else {
-        alert('حدث خطأ أثناء الإرسال');
-        btn.disabled = false;
-        btn.innerHTML = `ابعت الطلب لـ يا عم!`;
-      }
-    } catch (err) {
-      alert('خطأ في الاتصال بالشبكة');
-      btn.disabled = false;
-      btn.innerHTML = `ابعت الطلب لـ يا عم!`;
-    }
-  });
+function scrollToMenu() {
+  const section = document.getElementById('ordering-section');
+  if (section) section.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Menu / Cart Logic (Existing)
 function startPreloader() {
   const loaderBar = document.getElementById('loader-bar');
   const preloader = document.getElementById('preloader');
@@ -99,52 +35,91 @@ function startPreloader() {
       progress = 100;
       clearInterval(interval);
       setTimeout(() => {
-        preloader.style.opacity = '0';
+        preloader.classList.add('opacity-0');
         setTimeout(() => {
           preloader.style.display = 'none';
-          mainContent.style.opacity = '1';
+          mainContent.classList.remove('opacity-0');
+          mainContent.classList.add('opacity-100');
         }, 800);
       }, 1000);
     }
-    if (loaderBar) loaderBar.style.width = `${progress}%`;
+    loaderBar.style.width = `${progress}%`;
   }, 150);
 }
 
 function renderSandwiches() {
   const container = document.getElementById('sandwich-list');
   if(!container) return;
-  container.innerHTML = SANDWICH_ITEMS.map((item) => {
+  container.innerHTML = SANDWICH_ITEMS.map((item, index) => {
     const qty = cart[item.name]?.quantity || 0;
+    const bread = cart[item.name]?.bread || 'baladi';
+    const noBreadOptions = ['حواوشي يا عم', 'سندوتش فراخ استربس', 'صينية شهية لفرد واحد', 'مكرونة بالبشامل لفرد واحد', 'كرات بطاطس بالجبنة لفرد واحد'];
+    const showBread = !noBreadOptions.includes(item.name);
     return `
-      <div class="p-5 rounded-[2.5rem] bg-white/5 border-2 ${qty > 0 ? 'border-[#FAB520]' : 'border-transparent'} flex flex-col sm:flex-row items-center gap-5">
-        <img src="${item.image}" class="w-32 h-32 rounded-[2rem] object-cover">
-        <div class="flex-1 text-center sm:text-right">
-          <h3 class="text-2xl font-['Lalezar']">${item.name}</h3>
-          <p class="text-[#FAB520] font-bold">${item.price} ج.م</p>
+      <div class="p-4 md:p-5 rounded-[2.5rem] border-2 transition-all duration-300 ${qty > 0 ? 'bg-white/5 border-[#FAB520] shadow-2xl' : 'bg-white/5 border-transparent'}">
+        <div class="flex flex-col sm:flex-row items-center gap-5">
+          <div class="w-full sm:w-32 h-32 shrink-0 rounded-[2rem] overflow-hidden bg-white/5 relative">
+             <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1 text-center sm:text-right">
+            <h3 class="text-xl md:text-2xl font-['Lalezar'] mb-1">${item.name}</h3>
+            <p class="text-[#FAB520] font-bold text-lg">${item.price} ج.م</p>
+          </div>
+          <div class="flex items-center gap-4 bg-black p-2 rounded-2xl border border-white/10">
+            <button onclick="updateQty('${item.name}', -1, ${item.price})" class="text-[#FAB520] p-1.5"><i data-lucide="minus" class="w-5 h-5"></i></button>
+            <span class="text-xl font-bold w-8 text-center text-white" id="qty-${item.name}">${qty}</span>
+            <button onclick="updateQty('${item.name}', 1, ${item.price})" class="text-[#FAB520] p-1.5"><i data-lucide="plus" class="w-5 h-5"></i></button>
+          </div>
         </div>
-        <div class="flex items-center gap-4 bg-black p-2 rounded-2xl border border-white/10">
-          <button onclick="updateQty('${item.name}', -1, ${item.price})" class="text-[#FAB520]"><i data-lucide="minus"></i></button>
-          <span class="text-xl font-bold w-8 text-center">${qty}</span>
-          <button onclick="updateQty('${item.name}', 1, ${item.price})" class="text-[#FAB520]"><i data-lucide="plus"></i></button>
-        </div>
+        ${showBread ? `
+          <div class="mt-4 pt-4 border-t border-white/5 grid grid-cols-2 gap-3 ${qty > 0 ? 'block' : 'hidden'}" id="bread-${item.name}">
+            <button onclick="setBread('${item.name}', 'baladi')" class="py-2.5 rounded-xl font-bold text-sm ${bread === 'baladi' ? 'bg-[#FAB520] text-black' : 'bg-white/5 text-gray-500'}">عيش بلدي</button>
+            <button onclick="setBread('${item.name}', 'western')" class="py-2.5 rounded-xl font-bold text-sm ${bread === 'western' ? 'bg-[#FAB520] text-black' : 'bg-white/5 text-gray-500'}">عيش فينو فرنسي</button>
+          </div>
+        ` : ''}
       </div>
     `;
   }).join('');
   initIcons();
 }
 
-window.updateQty = function(name, delta, price) {
-  if (!cart[name]) cart[name] = { quantity: 0, price: price };
+function updateQty(name, delta, price) {
+  if (!cart[name]) cart[name] = { quantity: 0, price: price, bread: 'baladi' };
   cart[name].quantity = Math.max(0, cart[name].quantity + delta);
   if (cart[name].quantity === 0) delete cart[name];
   renderSandwiches();
+  updateCartBadge();
   updateMainSummary();
-};
+}
+
+function setBread(name, type) {
+  if (cart[name]) {
+    cart[name].bread = type;
+    renderSandwiches();
+  }
+}
+
+function updateSauceQty(delta) {
+  sauceQuantity = Math.max(0, sauceQuantity + delta);
+  document.getElementById('sauce-qty').innerText = sauceQuantity;
+  updateMainSummary();
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cart-badge');
+  const count = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0) + sauceQuantity;
+  if(badge) {
+    badge.innerText = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+}
 
 function updateMainSummary() {
   const summaryBox = document.getElementById('main-order-summary');
   const totalEl = document.getElementById('main-total-price');
   let subtotal = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  subtotal += (sauceQuantity * SAUCE_PRICE);
   if (subtotal > 0) {
     summaryBox.classList.remove('hidden');
     totalEl.innerText = `${subtotal + DELIVERY_FEE} ج.م`;
@@ -153,20 +128,55 @@ function updateMainSummary() {
   }
 }
 
-window.toggleCart = function() {
+function toggleCart() {
   const overlay = document.getElementById('cart-drawer-overlay');
-  const drawer = document.getElementById('cart-drawer');
-  if (overlay.classList.contains('hidden')) {
-    overlay.classList.remove('hidden');
-    setTimeout(() => drawer.style.transform = 'translateX(0)', 10);
-  } else {
-    drawer.style.transform = 'translateX(100%)';
-    setTimeout(() => overlay.classList.add('hidden'), 500);
-  }
-};
+  overlay.classList.toggle('hidden');
+}
+
+function toggleSpecialModal() {
+  const modal = document.getElementById('special-order-modal');
+  modal.classList.toggle('hidden');
+}
+
+// Handle Special Request Form
+const specialForm = document.getElementById('special-request-form');
+if(specialForm) {
+  specialForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('special-msg').value;
+    const phone = document.getElementById('special-phone').value;
+    const btn = document.getElementById('special-submit-btn');
+    
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i><span>جاري الإرسال...</span>`;
+    initIcons();
+
+    try {
+      const response = await fetch("https://formspree.io/f/xdazllep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ النوع: "عزومة / طلب خاص (HTML)", الطلب: msg, التليفون: phone })
+      });
+      if (response.ok) {
+        toggleSpecialModal();
+        document.getElementById('success-screen').style.display = 'flex';
+        setTimeout(() => { location.reload(); }, 4000);
+      } else {
+        alert('حدث خطأ، حاول مجدداً');
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+        initIcons();
+      }
+    } catch (err) {
+      alert('خطأ في الاتصال');
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="send" class="w-6 h-6"></i><span>بعت الطلب لـ يا عم!</span>`;
+      initIcons();
+    }
+  });
+}
 
 window.onload = () => {
   startPreloader();
   renderSandwiches();
-  initIcons();
 };

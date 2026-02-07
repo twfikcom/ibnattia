@@ -1,10 +1,10 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/Hero';
 import SpecialModal from './components/SpecialModals';
 import { LOGO_URL, SANDWICH_ITEMS, TRAY_ITEMS, SWEET_ITEMS } from './constants';
 import { SpecialOrderState } from './types';
-// Added Facebook to the lucide-react import list
 import { Utensils, IceCream, Sandwich, ShoppingBasket, X, Trash2, Send, Plus, Minus, Truck, Loader2, Star, Sparkles, MapPin, Phone, User, AlertCircle, MessageSquare, ChefHat, HeartHandshake, Clock, Zap, Facebook } from 'lucide-react';
 
 const DELIVERY_FEE = 20;
@@ -253,14 +253,14 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Enhanced Order Summary Block */}
+              {/* Enhanced Order Summary Block - Moved BEFORE Catering */}
               <AnimatePresence>
                 {globalTotal > 0 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 40 }} 
                     animate={{ opacity: 1, y: 0 }} 
                     exit={{ opacity: 0, y: 40 }} 
-                    className="max-w-4xl mx-auto bg-white/5 backdrop-blur-2xl border border-[#FAB520]/30 rounded-[3rem] p-10 mt-20 mb-10 shadow-[0_20px_60px_rgba(250,181,32,0.15)] relative overflow-hidden"
+                    className="max-w-4xl mx-auto bg-white/5 backdrop-blur-2xl border border-[#FAB520]/30 rounded-[3rem] p-10 mt-16 mb-16 shadow-[0_20px_60px_rgba(250,181,32,0.15)] relative overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
                       <ShoppingBasket className="w-32 h-32 text-[#FAB520]" />
@@ -286,8 +286,8 @@ const App: React.FC = () => {
                 )}
               </AnimatePresence>
 
-              {/* Special Catering Section */}
-              <section className="mt-24">
+              {/* Special Catering Section - Now clearly after the Order Summary */}
+              <section className="mt-8">
                 <motion.div 
                   initial={{ opacity: 0, y: 40 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
@@ -297,8 +297,9 @@ const App: React.FC = () => {
                     <img src={LOGO_URL} className="w-96 h-96 object-contain" />
                   </motion.div>
                   <div className="relative z-10 flex flex-col items-center">
-                    <div className="bg-black/10 p-5 rounded-full mb-8">
-                      <ChefHat className="w-20 h-20 text-black" />
+                    {/* Using LOGO_URL as icon for this section */}
+                    <div className="bg-black/10 p-5 rounded-full mb-8 shadow-xl">
+                      <img src={LOGO_URL} className="w-24 h-24 object-contain" alt="Ya3m Logo Icon" />
                     </div>
                     <h2 className="text-5xl md:text-7xl font-normal font-['Lalezar'] mb-6">عايز عزومة؟ أو أكلة مخصوص؟</h2>
                     <p className="text-2xl md:text-3xl font-black mb-12 max-w-3xl opacity-80 leading-relaxed">يا عم بيعملك أي أكلة بيتي تخطر على بالك! قولي إيه في نفسك واحنا علينا التنفيذ والتوصيل لحد بابك.</p>
