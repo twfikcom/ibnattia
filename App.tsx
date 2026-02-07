@@ -8,7 +8,7 @@ import { SpecialOrderState } from './types';
 import { Utensils, IceCream, Sandwich, ShoppingBasket, X, Trash2, Send, Plus, Minus, Truck, Loader2, Star, Sparkles, MapPin, Phone, User, AlertCircle, MessageSquare, Facebook } from 'lucide-react';
 
 const DELIVERY_FEE = 20;
-const SAUCE_PRICE = 10;
+const SAUCE_PRICE = 20;
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
