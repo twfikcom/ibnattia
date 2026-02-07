@@ -1,0 +1,7 @@
+{
+  "name": "Copy of 1 pub of Ya3m Food Delivery Static",
+  "description": "A high-energy food delivery platform running as a static site.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
